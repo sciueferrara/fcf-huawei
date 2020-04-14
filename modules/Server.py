@@ -32,6 +32,6 @@ class Server:
                 self.model.item_bias[k] += self.lr * v
         self._send_strategy.update_deltas(self.model, item_vecs_bak, item_bias_bak)
 
-    def test(self, clients, max_k):
+    def predict(self, clients, max_k):
         self._send_strategy.broadcast_item_vectors(clients, self.model)
-        return [c.test(max_k) for c in clients]
+        return [c.predict(max_k) for c in clients]
