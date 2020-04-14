@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class ClientModel():
+class ClientModel:
     def __init__(self, n_items, n_factors):
         self.item_vecs = np.zeros((n_items, n_factors))
         self.item_bias = np.zeros(n_items)
