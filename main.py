@@ -22,26 +22,26 @@ def main(args):
     processing_strategy = ProcessingStrategy.SingleProcessing()
     send_strategy = SendStrategy.SendDelta() if args.with_delta else SendStrategy.SendVector()
 
-    for city in args.cities:
-        print("Working on", city, "dataset")
+    for dataset in args.datasets:
+        print("Working on", dataset, "dataset")
 
-        if not os.path.exists('results/{}'.format(city)):
-            os.makedirs('results/{}'.format(city))
+        if not os.path.exists('results/{}'.format(dataset)):
+            os.makedirs('results/{}'.format(dataset))
 
         # Read the dataset and prepare it for training, validation and test
-        names = ['user_id', 'venue_id', 'type', 'utc']
-        df = pd.read_csv('datasets/' + city + '.tsv', sep='\t', names=names)
-        df = df.groupby('user_id').filter(lambda x: len(x) > 20)
+        names = ['user_id', 'item_id', 'rating', 'utc']
+        df = pd.read_csv('datasets/' + dataset + '.tsv', sep='\t', dtype={'rating': 'float64', 'utc': 'int64'}, header=0, names=names)
+        df = df.groupby('user_id').filter(lambda x: len(x) >= 20)
         print(df.shape[0], 'interactions read')
-        df, _ = utils.convert_unique_idx(df, 'user_id')
-        df, venue_dict = utils.convert_unique_idx(df, 'venue_id')
+        df = utils.convert_unique_idx(df, 'user_id')
+        df = utils.convert_unique_idx(df, 'item_id')
         user_size = len(df['user_id'].unique())
-        item_size = len(df['venue_id'].unique())
-        print('Found {} users and {} venues'.format(user_size, item_size))
+        item_size = len(df['item_id'].unique())
+        print('Found {} users and {} items'.format(user_size, item_size))
         total_user_lists = utils.create_user_lists(df, user_size)
         train_user_lists, validation_user_lists, test_user_lists = utils.split_train_test(total_user_lists,
-                                                                                 test_size=0.2,
-                                                                                 validation_size=args.validation_size)
+                                                                                test_size=0.2,
+                                                                                validation_size=args.validation_size)
         train_interactions_size = sum([len(user_list) for user_list in train_user_lists])
         print('{} interactions considered for training'.format(train_interactions_size))
 
@@ -78,8 +78,8 @@ def main(args):
                     # Evaluation
                     if ((i + 1) % (args.eval_every * round_modifier)) == 0:
                         exp_setting_3 = exp_setting_2 + "_I" + str((i + 1) / round_modifier)
-                        results = server.test(clients, max_k=100)
-                        with open('results/{}/{}{}.tsv'.format(city, exp_type, exp_setting_3), 'w') as out:
+                        results = server.predict(clients, max_k=100)
+                        with open('results/{}/{}{}.tsv'.format(dataset, exp_type, exp_setting_3), 'w') as out:
                             for u in range(len(results)):
                                 for e, p in results[u].items():
                                     out.write(str(u) + '\t' + str(e) + '\t' + str(p) + '\n')
@@ -87,7 +87,7 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--cities', nargs='+', help='Set the cities you want', required=True)
+    parser.add_argument('--datasets', nargs='+', help='Set the datasets you want to use', required=True)
     parser.add_argument('--positive_fraction', type=float, help='Set the fraction of positive item to send (default 0)')
     parser.add_argument('--with_delta', action='store_true', help='Use if you want server to send deltas instead of overwriting item information')
     parser.add_argument('--validation_size', help='Set a validation size, if needed', type=float, default=0)
