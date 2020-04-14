@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class ServerModel():
+class ServerModel:
     def __init__(self, n_items, n_factors):
         self.item_vecs = np.random.randn(n_items, n_factors)/10
         self.item_bias = np.random.randn(n_items)/10
