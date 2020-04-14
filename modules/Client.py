@@ -10,7 +10,7 @@ class Client:
         self.validation_user_list = validation_user_list
         self.test_user_list = test_user_list
 
-    def test(self, max_k):
+    def predict(self, max_k):
         result = self.model.predict()
         result[list(self.train_user_list)] = -np.inf
         top_k = result.argsort()[-max_k:][::-1]
@@ -18,7 +18,7 @@ class Client:
         prediction = {top_k[i]: top_k_score[i] for i in range(len(top_k))}
 
         return prediction
-
+    
     def train(self, lr, positive_fraction):
         bias_reg = 0
         user_reg = lr / 20
