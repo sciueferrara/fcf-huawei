@@ -35,7 +35,7 @@ def convert_unique_idx(df, column_name):
     df[column_name] = df[column_name].astype('int')
     assert df[column_name].min() == 0
     assert df[column_name].max() == len(column_dict) - 1
-    return df, column_dict
+    return df
 
 
 def create_user_lists(df, user_size):
