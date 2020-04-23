@@ -41,8 +41,8 @@ class SendVector(SendStrategy):
         pass
 
     def delete_item_vectors(self, clients, i):
-        del clients[i].model.item_vecs
-        del clients[i].model.item_bias
+        clients[i].model.item_vecs = None
+        clients[i].model.item_bias = None
 
 
 class SendDelta(SendStrategy):

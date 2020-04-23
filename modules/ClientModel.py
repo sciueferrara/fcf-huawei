@@ -2,9 +2,9 @@ import numpy as np
 
 
 class ClientModel:
-    def __init__(self, n_items, n_factors):
-        self.item_vecs = np.zeros((n_items, n_factors))
-        self.item_bias = np.zeros(n_items)
+    def __init__(self, n_factors):
+        self.item_vecs = None
+        self.item_bias = None
         self.user_vec = np.random.randn(n_factors) / 10
 
     def predict(self):
