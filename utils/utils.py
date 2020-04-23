@@ -41,7 +41,7 @@ def convert_unique_idx(df, column_name):
 def create_user_lists(df, user_size):
     user_list = [dict() for _ in range(user_size)]
     for row in df.itertuples():
-        user_list[row.user_id][row.venue_id] = row.utc
+        user_list[row.user_id][row.item_id] = row.utc
     return user_list
 
 

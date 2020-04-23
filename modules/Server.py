@@ -29,7 +29,7 @@ class Server:
                 self.model.item_vecs[k] += self.lr * v
             for k, v in resulting_bias.items():
                 self.model.item_bias[k] += self.lr * v
-            self._send_strategy.delete_item_vectors(clients, [i])
+            self._send_strategy.delete_item_vectors(clients, i)
         self._send_strategy.update_deltas(self.model, item_vecs_bak, item_bias_bak)
 
     def predict(self, clients, max_k):
