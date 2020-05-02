@@ -75,6 +75,7 @@ class Client:
         for _ in range(self.sampler_size):
             print('ciao')
             items, biases = results.get()
+            print(items, biases)
             resulting_dic.update(items)
             resulting_bias.update(biases)
 
