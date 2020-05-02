@@ -1,22 +1,30 @@
 import abc
+import multiprocessing
+from .Worker import Worker
 
 
 class ProcessingStrategy:
     @abc.abstractmethod
-    def train_model(self, clients, c_list, lr, with_pos):
+    def train_model(self, server, clients, c_list):
         pass
 
 
 class SingleProcessing(ProcessingStrategy):
-    def train_model(self, clients, c_list, lr, with_pos):
-        item_vecs_updates = []
-        item_vecs_bias = []
+    def train_model(self, server, clients, c_list):
         for i in c_list:
-            self._send_strategy.send_item_vectors(clients, c_list, self.model)
-            resulting_dic, resulting_bias = clients[i].train(lr, with_pos)
-            for k, v in resulting_dic.items():
-                self.model.item_vecs[k] += self.lr * v
-            for k, v in resulting_bias.items():
-                self.model.item_bias[k] += self.lr * v
-            self._send_strategy.delete_item_vectors(clients, [i])
-        return item_vecs_updates, item_vecs_bias
+            server.train_on_client(clients, i)
+
+
+class MultiProcessing(ProcessingStrategy):
+    def train_model(self, server, clients, c_list):
+        tasks = multiprocessing.JoinableQueue()
+        results = multiprocessing.Queue()
+        num_workers = multiprocessing.cpu_count() - 1
+        workers = [Worker(tasks, results, server.train_on_client, clients) for _ in range(num_workers)]
+        for w in workers:
+            w.start()
+        for i in c_list:
+            tasks.put((clients, i))
+        for i in range(num_workers):
+            tasks.put(None)
+        tasks.join()
