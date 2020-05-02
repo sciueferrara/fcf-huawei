@@ -6,6 +6,7 @@ import os
 import argparse
 from modules import Server, ServerModel, Client, ClientModel, TripletSampler, ProcessingStrategy, SendStrategy
 import utils.utils as utils
+from progress.bar import IncrementalBar
 
 np.random.seed(43)
 random.seed(43)
@@ -72,7 +73,9 @@ def main(args):
                 # Start training
                 for i in range(args.n_epochs * round_modifier):
                     if i % round_modifier == 0:
-                        print('Epoch', str(int(i / round_modifier + 1)))
+                        bar = IncrementalBar('Epoch' + str(int(i / round_modifier + 1)), max=round_modifier)
+                        #print('Epoch', str(int(i / round_modifier + 1)))
+                    bar.next()
                     server.train_model(clients)
 
                     # Evaluation
