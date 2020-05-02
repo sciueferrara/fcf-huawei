@@ -68,6 +68,7 @@ class Client:
         for w in workers:
             w.start()
         for pair in self.train_set.sample_user_triples():
+            print(pair)
             tasks.put((pair, lr, positive_fraction, bias_reg, user_reg, positive_item_reg, negative_item_reg))
         for i in range(num_workers):
             tasks.put(None)
