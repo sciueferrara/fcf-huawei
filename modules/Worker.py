@@ -35,6 +35,7 @@ class WorkerLocal(multiprocessing.Process):
                 self.task_queue.task_done()
                 break
             (i, j), lr, positive_fraction, bias_reg, user_reg, positive_item_reg, negative_item_reg = next_task
-            self.work(i, j, lr, positive_fraction, bias_reg, user_reg, positive_item_reg, negative_item_reg)
+            answer = self.work(i, j, lr, positive_fraction, bias_reg, user_reg, positive_item_reg, negative_item_reg)
             self.task_queue.task_done()
+            self.result_queue.put(answer)
         return

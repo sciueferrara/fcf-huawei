@@ -52,7 +52,8 @@ class Client:
             if np.random.choice([True, False], p=[positive_fraction, 1-positive_fraction]):
                 resulting_dic[i] = d_loss * wu - positive_item_reg * hi
                 resulting_bias[i] = d_loss - bias_reg * bi
-        print('sono qui')
+
+        return resulting_dic, resulting_bias
     
     def train(self, lr, positive_fraction):
         bias_reg = 0
@@ -74,7 +75,6 @@ class Client:
             tasks.put(None)
         tasks.join()
         for _ in range(self.sampler_size):
-            print('ciao')
             items, biases = results.get()
             print(items, biases)
             resulting_dic.update(items)
