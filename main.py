@@ -73,7 +73,7 @@ def main(args):
                 # Start training
                 for i in range(args.n_epochs * round_modifier):
                     if i % round_modifier == 0:
-                        bar = IncrementalBar('Epoch' + str(int(i / round_modifier + 1)), max=round_modifier)
+                        bar = IncrementalBar('Epoch ' + str(int(i / round_modifier + 1)), max=round_modifier)
                         #print('Epoch', str(int(i / round_modifier + 1)))
                     bar.next()
                     server.train_model(clients)
