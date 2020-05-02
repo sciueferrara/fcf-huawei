@@ -4,13 +4,14 @@ from .Worker import WorkerLocal
 
 
 class Client:
-    def __init__(self, client_id, model, train, train_user_list, validation_user_list, test_user_list):
+    def __init__(self, client_id, model, train, train_user_list, validation_user_list, test_user_list, sampler_size):
         self.id = client_id
         self.model = model
         self.train_set = train
         self.train_user_list = train_user_list
         self.validation_user_list = validation_user_list
         self.test_user_list = test_user_list
+        self.sampler_size = sampler_size
 
     def predict(self, max_k):
         result = self.model.predict()

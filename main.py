@@ -67,7 +67,7 @@ def main(args):
                 server_model = ServerModel(item_size, n_factors)
                 server = Server(server_model, lr, args.fraction, args.positive_fraction, processing_strategy, send_strategy)
                 clients = [Client(u, ClientModel(n_factors), triplet_samplers[u], train_user_lists[u],
-                                  validation_user_lists[u], test_user_lists[u]) for u in range(user_size)]
+                                  validation_user_lists[u], test_user_lists[u], sampler_size) for u in range(user_size)]
 
                 # Start training
                 for i in range(args.n_epochs * round_modifier):
