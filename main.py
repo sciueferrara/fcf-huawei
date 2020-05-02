@@ -19,7 +19,7 @@ def main(args):
 
     exp_type = utils.create_file_prefix(args.positive_fraction, args.with_delta, args.fraction, args.sampler_size)
 
-    processing_strategy = ProcessingStrategy.SingleProcessing()
+    processing_strategy = ProcessingStrategy.MultiProcessing() if args.mp else ProcessingStrategy.SingleProcessing()
     send_strategy = SendStrategy.SendDelta() if args.with_delta else SendStrategy.SendVector()
 
     for dataset in args.datasets:
@@ -97,5 +97,6 @@ if __name__ == '__main__':
     parser.add_argument('--fraction', help='Set the fraction of clients per round (0 for just one client)', type=float, default=0, required=True)
     parser.add_argument('--sampler_size', help='Set the sampler size: single for 1, uniform for R/U')
     parser.add_argument('--eval_every', type=int, default=10)
+    parser.add_argument('--mp', action='store_true', help='Use if you want to use multiprocessing')
     parsed_args = parser.parse_args()
     main(parsed_args)
