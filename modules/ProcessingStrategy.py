@@ -18,9 +18,8 @@ class SingleProcessing(ProcessingStrategy):
 class MultiProcessing(ProcessingStrategy):
     def train_model(self, server, clients, c_list):
         tasks = multiprocessing.JoinableQueue()
-        results = multiprocessing.Queue()
         num_workers = multiprocessing.cpu_count() - 1
-        workers = [Worker(tasks, results, server.train_on_client, clients) for _ in range(num_workers)]
+        workers = [Worker(tasks, server.train_on_client, clients) for _ in range(num_workers)]
         for w in workers:
             w.start()
         for i in c_list:
