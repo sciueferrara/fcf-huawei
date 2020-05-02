@@ -21,7 +21,6 @@ class Server:
 
     def train_on_client(self, clients, i):
         resulting_dic, resulting_bias = clients[i].train(self.lr, self.positive_fraction)
-        print('arrivato qui')
         for k, v in resulting_dic.items():
             self.model.item_vecs[k] += self.lr * v
         for k, v in resulting_bias.items():
