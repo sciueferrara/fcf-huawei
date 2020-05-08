@@ -42,9 +42,8 @@ def main(args):
                     for k, v in users.items():
                         items.extend(v[:10])
 
-                    print(items)
-
                     how_many = sorted([v for _, v in count_elements(items).items()], reverse=True)
+                    print(how_many)
 
                     #how_many = [int(r.split("\t")[1].replace('\n', '')) for r in f]
                     #how_many = sorted(how_many, reverse=True)
