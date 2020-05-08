@@ -69,7 +69,7 @@ def main(args):
             i += 1
         j += 1
 
-    plt.show()
+    plt.savefig('prova.png')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
