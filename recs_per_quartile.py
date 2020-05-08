@@ -65,6 +65,7 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--datasets', nargs='+', help='Set the datasets you want to use', required=True)
+    parser.add_argument('--validation_size', help='Set a validation size, if needed', type=float, default=0)
     parsed_args = parser.parse_args()
     main(parsed_args)
 
