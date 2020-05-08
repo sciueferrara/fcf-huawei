@@ -59,8 +59,7 @@ def main(args):
                 with open('results/{}/recs/{}'.format(dataset, filename)) as f:
                     for l in f:
                         u = l.split('\t')[0]
-                        print(diz[int(u)])
-                        file_dict.get(diz[u]).write(l)
+                        file_dict.get(diz[int(u)]).write(l)
 
                 f1.close()
                 f2.close()
