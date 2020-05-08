@@ -58,7 +58,7 @@ def main(args):
 
                 with open('results/{}/recs/{}'.format(dataset, filename)) as f:
                     for l in f:
-                        u = l.split(' ')[0]
+                        u = l.split('\t')[0]
                         file_dict.get(diz[u]).write(l)
 
                 f1.close()
