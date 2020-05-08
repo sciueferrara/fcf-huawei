@@ -16,6 +16,7 @@ def get_user_quartiles(train_user_lists):
     diz.update({u: 2 for u, l in enumerate(dims) if q1 <= l < q2})
     diz.update({u: 3 for u, l in enumerate(dims) if q2 <= l < q3})
     diz.update({u: 4 for u, l in enumerate(dims) if l >= q3})
+    print(diz)
 
     return diz
 
