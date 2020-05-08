@@ -70,7 +70,8 @@ def main(args):
             i += 1
         j += 1
 
-    pickle.dump((fig1, f1_axes), 'salvataggio')
+    file_pi = open('salvataggio', 'w')
+    pickle.dump((fig1, f1_axes), file_pi)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
