@@ -2,6 +2,7 @@ import os
 import argparse
 
 import matplotlib.pyplot as plt
+import pickle
 
 
 
@@ -69,7 +70,7 @@ def main(args):
             i += 1
         j += 1
 
-    plt.savefig('prova.png')
+    pickle.dump((fig1, f1_axes), 'salvataggio')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
