@@ -32,6 +32,7 @@ def main(args):
                     users = {}
                     for r in f:
                         info = r.split("\t")
+                        print(int(info[0]))
                         try:
                             users[int(info[0])].append(int(info[1]))
                         except:
