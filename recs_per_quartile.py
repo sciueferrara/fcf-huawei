@@ -37,6 +37,8 @@ def main(args):
         for filename in os.listdir('results/{}/recs'.format(dataset)):
             if filename.startswith("P3Rec"):
 
+                print(filename)
+
                 f1 = open('results/Q-{}/recs/Q1-{}'.format(dataset, filename), 'w')
                 f2 = open('results/Q-{}/recs/Q2-{}'.format(dataset, filename), 'w')
                 f3 = open('results/Q-{}/recs/Q3-{}'.format(dataset, filename), 'w')
