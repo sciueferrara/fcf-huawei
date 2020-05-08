@@ -32,9 +32,11 @@ def main(args):
                     users = {}
                     for r in f:
                         info = r.split("\t")
-                        if not users[int(info[0])]:
+                        try:
+                            users[int(info[0])].append(int(info[1]))
+                        except:
                             users[int(info[0])] = []
-                        users[int(info[0])].append(int(info[1]))
+                            users[int(info[0])].append(int(info[1]))
 
                     items = []
                     for k, v in users:
