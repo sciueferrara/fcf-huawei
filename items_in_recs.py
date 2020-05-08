@@ -39,7 +39,7 @@ def main(args):
                             users[int(info[0])].append(int(info[1]))
 
                     items = []
-                    for k, v in users:
+                    for k, v in users.items():
                         items.extend(v[:10])
 
                     how_many = sorted([v for _, v in count_elements(items)], reverse=True)
