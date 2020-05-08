@@ -52,7 +52,7 @@ def main(args):
 
                     if filename.split("-")[2].startswith('Sampsingle'):
                         results[dataset]['single'][filename.split("-")[0]] = how_many
-                    elif filename.split("-")[2].startswith('Sampuniform.tsv'):
+                    elif filename.split("-")[2].startswith('Sampuniform'):
                         results[dataset]['uniform'][filename.split("-")[0]] = how_many
 
     j = 0
