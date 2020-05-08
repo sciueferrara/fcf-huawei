@@ -43,7 +43,6 @@ def main(args):
                         items.extend(v[:10])
 
                     how_many = sorted([v for _, v in count_elements(items).items()], reverse=True)
-                    print(how_many)
 
                     #how_many = [int(r.split("\t")[1].replace('\n', '')) for r in f]
                     #how_many = sorted(how_many, reverse=True)
@@ -51,9 +50,9 @@ def main(args):
                     #    factor = float(filename.split("-")[0].split("P3RecPlus")[1])
                     #    how_many = [x/(factor*10) for x in how_many]
 
-                    if filename.split("-")[2] == 'Sampsingle.tsv':
+                    if filename.split("-")[2].startswith('Sampsingle'):
                         results[dataset]['single'][filename.split("-")[0]] = how_many
-                    elif filename.split("-")[2] == 'Sampuniform.tsv':
+                    elif filename.split("-")[2].startswith('Sampuniform.tsv'):
                         results[dataset]['uniform'][filename.split("-")[0]] = how_many
 
     j = 0
