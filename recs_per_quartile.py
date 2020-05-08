@@ -22,6 +22,9 @@ def main(args):
     for dataset in args.datasets:
         print("Working on", dataset, "dataset")
 
+        if not os.path.exists('results/Q-{}/recs/'.format(dataset)):
+            os.makedirs('results/Q-{}/recs/'.format(dataset))
+
         names = ['user_id', 'item_id', 'rating', 'utc']
         df = pd.read_csv('datasets/' + dataset + '.tsv', sep='\t', dtype={'rating': 'float64', 'utc': 'int64'}, header=0, names=names)
         df = df.groupby('user_id').filter(lambda x: len(x) >= 20)
@@ -36,6 +39,7 @@ def main(args):
 
         for filename in os.listdir('results/{}/recs'.format(dataset)):
             if filename.startswith("P3Rec"):
+
 
                 print(filename)
 
