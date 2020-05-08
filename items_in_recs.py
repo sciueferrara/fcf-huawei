@@ -32,7 +32,6 @@ def main(args):
                     users = {}
                     for r in f:
                         info = r.split("\t")
-                        print(int(info[0]))
                         try:
                             users[int(info[0])].append(int(info[1]))
                         except:
@@ -42,6 +41,8 @@ def main(args):
                     items = []
                     for k, v in users.items():
                         items.extend(v[:10])
+
+                    print(items)
 
                     how_many = sorted([v for _, v in count_elements(items).items()], reverse=True)
 
