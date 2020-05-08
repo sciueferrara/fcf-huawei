@@ -10,12 +10,14 @@ def get_user_quartiles(train_user_lists):
     q1 = np.quantile(dims, 0.25)
     q2 = np.quantile(dims, 0.5)
     q3 = np.quantile(dims, 0.75)
-    u_0 = [u for u, l in enumerate(dims) if l < q1]
-    u_1 = [u for u, l in enumerate(dims) if q1 <= l < q2]
-    u_2 = [u for u, l in enumerate(dims) if q2 <= l < q3]
-    u_3 = [u for u, l in enumerate(dims) if l >= q3]
 
-    return u_0, u_1, u_2, u_3
+    diz = {}
+    diz.update({u: 1 for u, l in enumerate(dims) if l < q1})
+    diz.update({u: 2 for u, l in enumerate(dims) if q1 <= l < q2})
+    diz.update({u: 3 for u, l in enumerate(dims) if q2 <= l < q3})
+    diz.update({u: 4 for u, l in enumerate(dims) if l >= q3})
+
+    return diz
 
 
 def main(args):
@@ -35,11 +37,10 @@ def main(args):
         train_user_lists, _, _ = utils.split_train_test(total_user_lists,
                                                                                 test_size=0.2,
                                                                                 validation_size=args.validation_size)
-        u_0, u_1, u_2, u_3 = get_user_quartiles(train_user_lists)
+        diz = get_user_quartiles(train_user_lists)
 
         for filename in os.listdir('results/{}/recs'.format(dataset)):
             if filename.startswith("P3Rec"):
-
 
                 print(filename)
 
@@ -48,17 +49,17 @@ def main(args):
                 f3 = open('results/Q-{}/recs/Q3-{}'.format(dataset, filename), 'w')
                 f4 = open('results/Q-{}/recs/Q4-{}'.format(dataset, filename), 'w')
 
+                file_dict = {
+                    1: f1,
+                    2: f2,
+                    3: f3,
+                    4: f4
+                }
+
                 with open('results/{}/recs/{}'.format(dataset, filename)) as f:
                     for l in f:
                         u = l.split(' ')[0]
-                        if u in u_0:
-                            f1.write(l)
-                        elif u in u_1:
-                            f2.write(l)
-                        elif u in u_2:
-                            f3.write(l)
-                        elif u in u_3:
-                            f4.write(l)
+                        file_dict.get(diz[u]).write(l)
 
                 f1.close()
                 f2.close()
