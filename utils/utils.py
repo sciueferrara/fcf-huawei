@@ -1,7 +1,6 @@
 import pickle
 import numpy as np
 from typing import Tuple
-import argparse
 
 
 def save_obj(obj, name):
@@ -74,11 +73,11 @@ def split_train_test(user_list, test_size=0.2, validation_size=0) -> Tuple[list,
 
 def create_file_prefix(positive_fraction, with_delta, fraction, sampler_size):
     if positive_fraction:
-        string = 'P3RecPlus' + str(positive_fraction)
+        string = 'FedBPRPlus' + str(positive_fraction)
     else:
         if with_delta:
-            string = 'P3RecMinusDelta'
+            string = 'FedBPRMinusDelta'
         else:
-            string = 'P3RecMinus'
+            string = 'FedBPRMinus'
     string += '-Frac' + str(fraction) + '-Samp' + sampler_size
     return string
