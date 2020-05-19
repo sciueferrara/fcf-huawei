@@ -18,7 +18,7 @@ def main(args):
     if not os.path.exists('results'):
         os.makedirs('results')
 
-    exp_type = utils.create_file_prefix(args.positive_fraction, args.with_delta, args.fraction, args.sampler_size)
+    #exp_type = utils.create_file_prefix(args.positive_fraction, args.with_delta, args.fraction, args.sampler_size)
 
     processing_strategy = ProcessingStrategy.MultiProcessing() if args.mp else ProcessingStrategy.SingleProcessing()
     send_strategy = SendStrategy.SendDelta() if args.with_delta else SendStrategy.SendVector()
@@ -90,7 +90,7 @@ def main(args):
                     if ((i + 1) % (args.eval_every)) == 0:
                         exp_setting_3 = exp_setting_2 + "_I" + str((i + 1))
                         results = server.predict(clients, max_k=100)
-                        with open('results/{}/{}{}.tsv'.format(dataset, exp_type, exp_setting_3), 'w') as out:
+                        with open('results/{}/{}.tsv'.format(dataset, exp_setting_3), 'w') as out:
                             for u in range(len(results)):
                                 for e, p in results[u].items():
                                     out.write(str(u) + '\t' + str(e) + '\t' + str(p) + '\n')
@@ -101,7 +101,6 @@ if __name__ == '__main__':
     parser.add_argument('--datasets', nargs='+', help='Set the datasets you want to use', required=True)
     parser.add_argument('-F', '--n_factors', nargs='+', help='Set the latent factors you want', type=int, required=True)
     parser.add_argument('-U', '--fraction', help='Set the fraction of clients per round (0 for just one client)', type=float, default=0, required=True)
-    parser.add_argument('--positive_fraction', help='Set the fraction of clients per round (0 for just one client)', type=float, default=0)
     parser.add_argument('-lr', '--lr', nargs='+', help='Set the learning rates', type=float, required=True)
     parser.add_argument('-E', '--n_epochs', help='Set the number of epochs', type=int, required=True)
     parser.add_argument('--with_delta', action='store_true', help='Use if you want server to send deltas instead of overwriting item information')
