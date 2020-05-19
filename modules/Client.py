@@ -12,7 +12,7 @@ class Client:
         self.validation_user_list = validation_user_list
         self.test_user_list = test_user_list
         self.train = train
-        self.Cu = sp.spare.diags(train, 0)
+        self.Cu = sp.sparse.diags(train, 0)
         self.I = sp.sparse.diags(np.repeat(1, len(train)), 0)
 
     def predict(self, max_k):
