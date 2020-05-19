@@ -1,4 +1,5 @@
 import random
+from progress.bar import ChargingBar
 
 random.seed(43)
 
@@ -18,22 +19,24 @@ class Server:
             idx = random.sample(range(len(clients)), int(fraction*len(clients)))
         return idx
 
-    def train_on_client(self, clients, i):
+    def train_on_client(self, clients, i, progress):
         resulting_dic = clients[i].train()
         for k, v in resulting_dic.items():
             self.model.item_vecs[k] += self.lr * 2 * v
-        print('Completed client ', i)
+        progress.next()
         #for k, v in resulting_bias.items():
         #    self.model.item_bias[k] += self.lr * v
 
     def train_model(self, clients):
+        regLambda = 0.1
+        bak = self.model.item_vecs.copy()
         item_vecs_bak, item_bias_bak = self._send_strategy.backup_item_vectors(self.model) or (None, None)
         c_list = self.select_clients(clients, self.fraction)
         for i in c_list:
             self._send_strategy.send_item_vectors(clients, i, self.model)
-        self._processing_strategy.train_model(self, clients, c_list)
-        regLambda = 0.1
-        bak = self.model.item_vecs.copy()
+
+        progress = ChargingBar('Completing epoch', max=len(c_list))
+        self._processing_strategy.train_model(self, clients, c_list, progress)
         self.model.item_vecs -= self.lr * regLambda * bak
         for i in c_list:
             self._send_strategy.delete_item_vectors(clients, i)
