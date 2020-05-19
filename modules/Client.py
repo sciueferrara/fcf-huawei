@@ -2,6 +2,8 @@ import numpy as np
 import random
 import numpy as np
 import scipy as sp
+import scipy.sparse
+import scipy.sparse.linalg
 
 
 class Client:
