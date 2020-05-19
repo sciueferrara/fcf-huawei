@@ -27,6 +27,7 @@ class Client:
         return prediction
 
     def train(self):
+        print('iniziato')
         resulting_dic = {}
         regLambda = 0.1
         reg = sp.sparse.csr_matrix(regLambda * np.eye(self.model.item_vecs.shape[1]))
