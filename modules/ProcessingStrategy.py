@@ -23,7 +23,7 @@ class MultiProcessing(ProcessingStrategy):
         for w in workers:
             w.start()
         for i in c_list:
-            tasks.put((server.train_on_client, clients, i))
+            tasks.put((clients, i))
         for i in range(num_workers):
             tasks.put(None)
         tasks.join()
