@@ -13,7 +13,7 @@ class Client:
         self.train_user_list = train_user_list
         self.validation_user_list = validation_user_list
         self.test_user_list = test_user_list
-        self.train = train
+        self.train_set = train
         self.Cu = sp.sparse.diags(train, 0)
         self.I = sp.sparse.diags(np.repeat(1, len(train)), 0)
 
@@ -37,7 +37,7 @@ class Client:
         YTCuY = YtY + Yt.dot(self.Cu - self.I).dot(self.model.item_vecs)
         self.model.user_vec = sp.sparse.linalg.spsolve(YTCuY + reg, Yt.dot(self.Cu))
 
-        for i in range(len(self.train)):
-            resulting_dic[i] = (self.train[i] - self.model.user_vec.dot(self.model.item_vecs[i])) * self.model.user_vec
+        for i in range(len(self.train_set)):
+            resulting_dic[i] = (self.train_set[i] - self.model.user_vec.dot(self.model.item_vecs[i])) * self.model.user_vec
 
         return resulting_dic
