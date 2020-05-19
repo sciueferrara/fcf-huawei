@@ -20,11 +20,9 @@ class Server:
 
     def train_on_client(self, clients, i):
         resulting_dic = clients[i].train()
-        regLambda = 0.1
-        bak = self.model.item_vecs.copy()
         for k, v in resulting_dic.items():
             self.model.item_vecs[k] += self.lr * 2 * v
-        self.model.item_vecs -= self.lr * regLambda * bak
+        print('Completed client ', i)
         #for k, v in resulting_bias.items():
         #    self.model.item_bias[k] += self.lr * v
 
@@ -34,6 +32,9 @@ class Server:
         for i in c_list:
             self._send_strategy.send_item_vectors(clients, i, self.model)
         self._processing_strategy.train_model(self, clients, c_list)
+        regLambda = 0.1
+        bak = self.model.item_vecs.copy()
+        self.model.item_vecs -= self.lr * regLambda * bak
         for i in c_list:
             self._send_strategy.delete_item_vectors(clients, i)
         self._send_strategy.update_deltas(self.model, item_vecs_bak, item_bias_bak)
