@@ -39,3 +39,5 @@ class Client:
 
         for i in range(len(self.train)):
             resulting_dic[i] = (self.train[i] - self.model.user_vec.dot(self.model.item_vecs[i])) * self.model.user_vec
+
+        return resulting_dic
