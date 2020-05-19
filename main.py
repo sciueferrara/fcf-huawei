@@ -101,7 +101,7 @@ if __name__ == '__main__':
     parser.add_argument('--datasets', nargs='+', help='Set the datasets you want to use', required=True)
     parser.add_argument('-F', '--n_factors', nargs='+', help='Set the latent factors you want', type=int, required=True)
     parser.add_argument('-U', '--fraction', help='Set the fraction of clients per round (0 for just one client)', type=float, default=0, required=True)
-    parser.add_argument('--positive_fraction', help='Set the fraction of clients per round (0 for just one client)', type=float, default=0, required=True)
+    parser.add_argument('--positive_fraction', help='Set the fraction of clients per round (0 for just one client)', type=float, default=0)
     parser.add_argument('-lr', '--lr', nargs='+', help='Set the learning rates', type=float, required=True)
     parser.add_argument('-E', '--n_epochs', help='Set the number of epochs', type=int, required=True)
     parser.add_argument('--with_delta', action='store_true', help='Use if you want server to send deltas instead of overwriting item information')
