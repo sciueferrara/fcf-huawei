@@ -10,7 +10,7 @@ class Worker(multiprocessing.Process):
 
     def run(self):
         while True:
-            next_task, progress = self.task_queue.get()
+            next_task = self.task_queue.get()
             if next_task is None:
                 # Poison pill means shutdown
                 self.task_queue.task_done()
