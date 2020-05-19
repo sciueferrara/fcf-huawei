@@ -28,7 +28,7 @@ class Server:
             self.model.item_vecs[k] += self.lr * 2 * v
         #self.progress.next()
         self.contatore += 1
-        print(self.contatore)
+        print(id(self.contatore))
         #for k, v in resulting_bias.items():
         #    self.model.item_bias[k] += self.lr * v
 
