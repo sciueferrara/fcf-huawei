@@ -83,8 +83,8 @@ def main(args):
                 # Start training
                 bar = IncrementalBar('Training', max=args.n_epochs)
                 for i in range(args.n_epochs):
-                    server.train_model(clients)
                     bar.next()
+                    server.train_model(clients)
 
                     # Evaluation
                     if ((i + 1) % (args.eval_every)) == 0:
