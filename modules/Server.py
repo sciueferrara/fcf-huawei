@@ -13,6 +13,7 @@ class Server:
         self.lr = lr
         self.fraction = fraction
         self.progress = None
+        self.contatore = 0
 
     def select_clients(self, clients, fraction=0.1):
         if fraction == 0:
@@ -25,7 +26,9 @@ class Server:
         resulting_dic = clients[i].train()
         for k, v in resulting_dic.items():
             self.model.item_vecs[k] += self.lr * 2 * v
-        self.progress.next()
+        #self.progress.next()
+        self.contatore += 1
+        print(self.contatore)
         #for k, v in resulting_bias.items():
         #    self.model.item_bias[k] += self.lr * v
 
