@@ -80,6 +80,7 @@ def main(args):
                 clients = [Client(u, ClientModel(n_factors), train_sets[u], train_user_lists[u],
                                   validation_user_lists[u], test_user_lists[u]) for u in range(user_size)]
 
+                print('\n\n')
                 # Start training
                 bar = IncrementalBar('Training', max=args.n_epochs)
                 for i in range(args.n_epochs):

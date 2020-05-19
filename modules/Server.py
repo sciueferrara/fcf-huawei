@@ -1,5 +1,6 @@
 import random
 from progress.bar import ChargingBar
+import sys
 
 random.seed(43)
 
@@ -34,8 +35,9 @@ class Server:
         c_list = self.select_clients(clients, self.fraction)
         for i in c_list:
             self._send_strategy.send_item_vectors(clients, i, self.model)
-
-        progress = ChargingBar('Completing epoch', max=len(c_list))
+        sys.stdout.write('\x1b[1A')
+        sys.stdout.flush()
+        progress = ChargingBar('Completing epoch', max=len(c_list), suffix="[%(index)d / %(remaining)d]")
         self._processing_strategy.train_model(self, clients, c_list, progress)
         self.model.item_vecs -= self.lr * regLambda * bak
         for i in c_list:
