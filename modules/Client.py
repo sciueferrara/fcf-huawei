@@ -35,7 +35,7 @@ class Client:
         YtY = Yt.dot(self.model.item_vecs)
 
         YTCuY = YtY + Yt.dot(self.Cu - self.I).dot(self.model.item_vecs)
-        self.model.user_vec = sp.sparse.linalg.spsolve(YTCuY + reg, Yt.dot(self.Cu).dot(sp.sparse.csr_matrix(np.ones(len(self.train_set))).T))
+        self.model.user_vec = sp.sparse.csr_matrix(sp.sparse.linalg.spsolve(YTCuY + reg, Yt.dot(self.Cu).dot(sp.sparse.csr_matrix(np.ones(len(self.train_set))).T)))
 
         for i in range(len(self.train_set)):
             resulting_dic[i] = (sp.sparse.csr_matrix(self.train_set[i]) - self.model.user_vec.dot(self.model.item_vecs[i].T)) * self.model.user_vec
