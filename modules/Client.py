@@ -29,7 +29,7 @@ class Client:
     def train(self):
         resulting_dic = {}
         regLambda = 0.1
-        reg = regLambda * np.eye(self.model.item_vecs.shape[1], self.model.item_vecs.shape[1])
+        reg = regLambda * np.eye(self.model.item_vecs.shape[1])
 
         Yt = self.model.item_vecs.T
         YtY = Yt.dot(self.model.item_vecs)
@@ -38,6 +38,6 @@ class Client:
         self.model.user_vec = sp.sparse.linalg.spsolve(YTCuY + reg, Yt.dot(self.Cu))
 
         for i in range(len(self.train_set)):
-            resulting_dic[i] = (self.train_set[i] - self.model.user_vec.dot(self.model.item_vecs[i])) * self.model.user_vec
+            resulting_dic[i] = (sp.sparse.csr_matrix(self.train_set[i]) - self.model.user_vec.dot(self.model.item_vecs[i].T)) * self.model.user_vec
 
         return resulting_dic

@@ -27,11 +27,11 @@ class SendStrategy:
 class SendVector(SendStrategy):
     def broadcast_item_vectors(self, clients, model):
         for i, c in enumerate(clients):
-            c.model.item_vecs = np.copy(model.item_vecs)
+            c.model.item_vecs = model.item_vecs.copy()
             c.model.item_bias = np.copy(model.item_bias)
 
     def send_item_vectors(self, clients, i, model):
-        clients[i].model.item_vecs = np.copy(model.item_vecs)
+        clients[i].model.item_vecs = model.item_vecs.copy()
         clients[i].model.item_bias = np.copy(model.item_bias)
 
     def backup_item_vectors(self, model):
