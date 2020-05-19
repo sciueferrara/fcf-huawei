@@ -19,7 +19,6 @@ class Server:
         return idx
 
     def train_on_client(self, clients, i):
-        print(i)
         resulting_dic = clients[i].train()
         regLambda = 0.1
         bak = self.model.item_vecs.copy()
