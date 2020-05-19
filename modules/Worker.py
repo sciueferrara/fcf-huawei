@@ -15,7 +15,6 @@ class Worker(multiprocessing.Process):
                 # Poison pill means shutdown
                 self.task_queue.task_done()
                 break
-            self.work(clients, next_task)
-            #self.work(self.clients, next_task)
+            self.work(self.clients, next_task)
             self.task_queue.task_done()
         return
