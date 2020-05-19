@@ -76,7 +76,7 @@ def main(args):
 
                 # Create server and clients
                 server_model = ServerModel(item_size, n_factors)
-                server = Server(server_model, lr, args.fraction, args.positive_fraction, processing_strategy, send_strategy)
+                server = Server(server_model, lr, args.fraction, processing_strategy, send_strategy)
                 clients = [Client(u, ClientModel(n_factors), train_sets[u], train_user_lists[u],
                                   validation_user_lists[u], test_user_lists[u]) for u in range(user_size)]
 
@@ -87,8 +87,8 @@ def main(args):
                     bar.next()
 
                     # Evaluation
-                    if ((i + 1) % (args.eval_every * round_modifier)) == 0:
-                        exp_setting_3 = exp_setting_2 + "_I" + str((i + 1) / round_modifier)
+                    if ((i + 1) % (args.eval_every)) == 0:
+                        exp_setting_3 = exp_setting_2 + "_I" + str((i + 1))
                         results = server.predict(clients, max_k=100)
                         with open('results/{}/{}{}.tsv'.format(dataset, exp_type, exp_setting_3), 'w') as out:
                             for u in range(len(results)):
@@ -100,9 +100,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--datasets', nargs='+', help='Set the datasets you want to use', required=True)
     parser.add_argument('-F', '--n_factors', nargs='+', help='Set the latent factors you want', type=int, required=True)
-    parser.add_argument('-pi', '--positive_fraction', type=float, help='Set the fraction of positive item to send (default 0)')
     parser.add_argument('-U', '--fraction', help='Set the fraction of clients per round (0 for just one client)', type=float, default=0, required=True)
-    parser.add_argument('-T', '--sampler_size', help='Set the sampler size: single for 1, uniform for R/U')
     parser.add_argument('-lr', '--lr', nargs='+', help='Set the learning rates', type=float, required=True)
     parser.add_argument('-E', '--n_epochs', help='Set the number of epochs', type=int, required=True)
     parser.add_argument('--with_delta', action='store_true', help='Use if you want server to send deltas instead of overwriting item information')

@@ -24,15 +24,10 @@ class Client:
 
         return prediction
 
-    def train(self, lr, positive_fraction):
-        bias_reg = 0
-        user_reg = lr / 20
-        positive_item_reg = lr / 20
-        negative_item_reg = lr / 200
+    def train(self):
         resulting_dic = {}
-        resulting_bias = {}
         regLambda = 0.1
-        reg = regLambda * np.eye(f, f)
+        reg = regLambda * np.eye(self.model.item_vecs.shape[1], self.model.item_vecs.shape[1])
 
         Yt = self.model.item_vecs.T
         YtY = Yt.dot(self.model.item_vecs)

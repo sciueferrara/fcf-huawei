@@ -4,13 +4,12 @@ random.seed(43)
 
 
 class Server:
-    def __init__(self, model, lr, fraction, positive_fraction, processing_strategy, send_strategy):
+    def __init__(self, model, lr, fraction, processing_strategy, send_strategy):
         self._processing_strategy = processing_strategy
         self._send_strategy = send_strategy
         self.model = model
         self.lr = lr
         self.fraction = fraction
-        self.positive_fraction = positive_fraction
 
     def select_clients(self, clients, fraction=0.1):
         if fraction == 0:
@@ -20,7 +19,7 @@ class Server:
         return idx
 
     def train_on_client(self, clients, i):
-        resulting_dic, resulting_bias = clients[i].train(self.lr, self.positive_fraction)
+        resulting_dic, resulting_bias = clients[i].train()
         regLambda = 0.1
         bak = self.model.item_vecs.copy()
         for k, v in resulting_dic.items():
