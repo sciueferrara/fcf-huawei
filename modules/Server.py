@@ -12,6 +12,7 @@ class Server:
         self.model = model
         self.lr = lr
         self.fraction = fraction
+        self.progress = None
 
     def select_clients(self, clients, fraction=0.1):
         if fraction == 0:
@@ -20,11 +21,11 @@ class Server:
             idx = random.sample(range(len(clients)), int(fraction*len(clients)))
         return idx
 
-    def train_on_client(self, clients, i, progress):
+    def train_on_client(self, clients, i):
         resulting_dic = clients[i].train()
         for k, v in resulting_dic.items():
             self.model.item_vecs[k] += self.lr * 2 * v
-        progress.next()
+        self.progress.next()
         #for k, v in resulting_bias.items():
         #    self.model.item_bias[k] += self.lr * v
 
@@ -37,11 +38,12 @@ class Server:
             self._send_strategy.send_item_vectors(clients, i, self.model)
         sys.stdout.write('\x1b[1A')
         sys.stdout.flush()
-        progress = ChargingBar('Completing epoch', max=len(c_list), suffix="[%(index)d / %(remaining)d]")
-        self._processing_strategy.train_model(self, clients, c_list, progress)
+        self.progress = ChargingBar('Completing epoch', max=len(c_list), suffix="[%(index)d / %(remaining)d]")
+        self._processing_strategy.train_model(self, clients, c_list)
         self.model.item_vecs -= self.lr * regLambda * bak
         for i in c_list:
             self._send_strategy.delete_item_vectors(clients, i)
+        self.progress = None
         self._send_strategy.update_deltas(self.model, item_vecs_bak, item_bias_bak)
 
     def predict(self, clients, max_k):
