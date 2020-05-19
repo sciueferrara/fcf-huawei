@@ -21,10 +21,13 @@ class Server:
 
     def train_on_client(self, clients, i):
         resulting_dic, resulting_bias = clients[i].train(self.lr, self.positive_fraction)
+        regLambda = 0.1
+        bak = self.model.item_vecs.copy()
         for k, v in resulting_dic.items():
-            self.model.item_vecs[k] += self.lr * v
-        for k, v in resulting_bias.items():
-            self.model.item_bias[k] += self.lr * v
+            self.model.item_vecs[k] += self.lr * 2 * v
+        self.model.item_vecs -= self.lr * regLambda * bak
+        #for k, v in resulting_bias.items():
+        #    self.model.item_bias[k] += self.lr * v
 
     def train_model(self, clients):
         item_vecs_bak, item_bias_bak = self._send_strategy.backup_item_vectors(self.model) or (None, None)

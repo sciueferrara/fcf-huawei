@@ -1,16 +1,19 @@
 import numpy as np
 import random
+import numpy as np
+import scipy as sp
 
 
 class Client:
-    def __init__(self, client_id, model, train, train_user_list, validation_user_list, test_user_list, sampler_size):
+    def __init__(self, client_id, model, train, train_user_list, validation_user_list, test_user_list):
         self.id = client_id
         self.model = model
-        self.train_set = train
         self.train_user_list = train_user_list
         self.validation_user_list = validation_user_list
         self.test_user_list = test_user_list
-        self.sampler_size = sampler_size
+        self.train = train
+        self.Cu = sp.spare.diags(train, 0)
+        self.I = sp.sparse.diags(np.repeat(1, len(train)), 0)
 
     def predict(self, max_k):
         result = self.model.predict()
@@ -28,37 +31,14 @@ class Client:
         negative_item_reg = lr / 200
         resulting_dic = {}
         resulting_bias = {}
+        regLambda = 0.1
+        reg = regLambda * np.eye(f, f)
 
-        for i, j in self.train_set.sample_user_triples():
-            x_i = self.model.predict_one(i)
-            x_j = self.model.predict_one(j)
-            x_ij = x_i - x_j
+        Yt = self.model.item_vecs.T
+        YtY = Yt.dot(self.model.item_vecs)
 
-            d_loss = 1 / (1 + np.exp(x_ij))
+        YTCuY = YtY + Yt.dot(self.Cu - self.I).dot(self.model.item_vecs)
+        self.model.user_vec = sp.sparse.linalg.spsolve(YTCuY + reg, Yt.dot(self.Cu))
 
-            bi = self.model.item_bias[i].copy()
-            bj = self.model.item_bias[j].copy()
-            bi_new = (d_loss - bias_reg * bi)
-            bj_new = (-d_loss - bias_reg * bj)
-
-            self.model.item_bias[i] += lr * bi_new
-            self.model.item_bias[j] += lr * bj_new
-
-            wu = self.model.user_vec.copy()
-            hi = self.model.item_vecs[i].copy()
-            hj = self.model.item_vecs[j].copy()
-            hi_new = (d_loss * wu - positive_item_reg * hi)
-            hj_new = (d_loss * (-wu) - negative_item_reg * hj)
-
-            self.model.user_vec += lr * (d_loss * (hi - hj) - user_reg * wu)
-            self.model.item_vecs[i] += lr * hi_new
-            self.model.item_vecs[j] += lr * hj_new
-
-            resulting_dic[j] = hj_new
-            resulting_bias[j] = bj_new
-            if positive_fraction:
-                if random.random() >= 1 - positive_fraction:
-                    resulting_dic[i] = hi_new
-                    resulting_bias[i] = bi_new
-
-        return resulting_dic, resulting_bias
+        for i in range(len(self.train)):
+            resulting_dic[i] = (self.train[i] - self.model.user_vec.dot(self.model.item_vecs[i])) * self.model.user_vec

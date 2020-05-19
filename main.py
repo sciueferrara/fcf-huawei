@@ -43,21 +43,31 @@ def main(args):
         train_user_lists, validation_user_lists, test_user_lists = utils.split_train_test(total_user_lists,
                                                                                 test_size=0.2,
                                                                                 validation_size=args.validation_size)
+        train_sets_tmp = [{k: 1 for k in train_user_lists[u]} for u in range(user_size)]
+        train_sets = []
+
+        for u in range(user_size):
+            for i in range(item_size):
+                train_sets_tmp[u].setdefault(i, 0)
+            train_sets.append([v for _, v in sorted(train_sets_tmp[u].items())])
+
+        del train_sets_tmp
+
         train_interactions_size = sum([len(user_list) for user_list in train_user_lists])
         print('{} interactions considered for training'.format(train_interactions_size))
 
         # Set parameters based on arguments
-        if args.fraction == 0:
-            round_modifier = int(train_interactions_size)
-        else:
-            round_modifier = int(train_interactions_size / (args.fraction * user_size))
+        #if args.fraction == 0:
+        #    round_modifier = int(train_interactions_size)
+        #else:
+        #    round_modifier = int(train_interactions_size / (args.fraction * user_size))
 
-        sampler_dict = {'single': 1,
-                        'uniform': int(train_interactions_size/user_size)}
-        sampler_size = sampler_dict.get(args.sampler_size)
+        # sampler_dict = {'single': 1,
+        #                'uniform': int(train_interactions_size/user_size)}
+        # sampler_size = sampler_dict.get(args.sampler_size)
 
         # Build final triplet samplers
-        triplet_samplers = [TripletSampler(train_user_lists[u], item_size, sampler_size) for u in range(user_size)]
+        # triplet_samplers = [TripletSampler(train_user_lists[u], item_size, sampler_size) for u in range(user_size)]
 
         for n_factors in args.n_factors:
             exp_setting_1 = "_F" + str(n_factors)
@@ -67,15 +77,14 @@ def main(args):
                 # Create server and clients
                 server_model = ServerModel(item_size, n_factors)
                 server = Server(server_model, lr, args.fraction, args.positive_fraction, processing_strategy, send_strategy)
-                clients = [Client(u, ClientModel(n_factors), triplet_samplers[u], train_user_lists[u],
-                                  validation_user_lists[u], test_user_lists[u], sampler_size) for u in range(user_size)]
+                clients = [Client(u, ClientModel(n_factors), train_sets[u], train_user_lists[u],
+                                  validation_user_lists[u], test_user_lists[u]) for u in range(user_size)]
 
                 # Start training
-                for i in range(args.n_epochs * round_modifier):
-                    if i % round_modifier == 0:
-                        bar = IncrementalBar('Epoch ' + str(int(i / round_modifier + 1)), max=round_modifier)
-                    bar.next()
+                bar = IncrementalBar('Training', max=args.n_epochs)
+                for i in range(args.n_epochs):
                     server.train_model(clients)
+                    bar.next()
 
                     # Evaluation
                     if ((i + 1) % (args.eval_every * round_modifier)) == 0:
