@@ -20,6 +20,7 @@ class Client:
     def predict(self, max_k):
         result = self.model.predict()
         result[list(self.train_user_list)] = -np.inf
+        result = result.toarray()
         top_k = result.argsort()[-max_k:][::-1]
         top_k_score = result[top_k]
         prediction = {top_k[i]: top_k_score[i] for i in range(len(top_k))}

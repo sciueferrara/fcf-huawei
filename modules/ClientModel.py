@@ -9,8 +9,6 @@ class ClientModel:
         self.user_vec = sp.sparse.csr_matrix(np.random.randn(n_factors) / 10)
 
     def predict(self):
-        print(self.item_vecs.shape)
-        print(self.user_vec.shape)
         return np.dot(self.item_vecs, self.user_vec.T)
 
     def predict_one(self, i):
