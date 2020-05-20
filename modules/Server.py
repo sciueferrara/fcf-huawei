@@ -3,6 +3,7 @@ from progress.bar import ChargingBar
 import sys
 import multiprocessing
 from .Worker import Worker
+import numpy as np
 
 random.seed(43)
 
@@ -68,7 +69,7 @@ class Server:
                 tasks.put(None)
             tasks.join()
 
-            self.model.item_vecs = shared_item_vecs.value
+            self.model.item_vecs = np.frombuffer(shared_item_vecs2.get_obj()).reshape(self.model.item_vecs.shape)
             print(self.model.item_vecs[1])
 
         #self._processing_strategy.train_model(self, clients, c_list)
