@@ -1,19 +1,21 @@
 import random
 from progress.bar import ChargingBar
 import sys
+import multiprocessing
+from .Worker import Worker
 
 random.seed(43)
 
 
 class Server:
-    def __init__(self, model, lr, fraction, processing_strategy, send_strategy):
+    def __init__(self, model, lr, fraction, mp, send_strategy):
         self._processing_strategy = processing_strategy
         self._send_strategy = send_strategy
         self.model = model
         self.lr = lr
         self.fraction = fraction
         self.progress = None
-        self.contatore = 0
+        self.mp = mp
 
     def select_clients(self, clients, fraction=0.1):
         if fraction == 0:
@@ -27,7 +29,7 @@ class Server:
         for k, v in resulting_dic.items():
             self.model.item_vecs[k] += self.lr * 2 * v
         #self.progress.next()
-        #self.contatore += 1
+        self.contatore += 1
         #print(id(self.contatore))
         with prova.get_lock():
             prova.value += 1
@@ -45,6 +47,26 @@ class Server:
         sys.stdout.write('\x1b[1A')
         sys.stdout.flush()
         self.progress = ChargingBar('Completing epoch', max=len(c_list), suffix="[%(index)d / %(remaining)d]")
+
+        if not self.mp:
+            for i in c_list:
+                resulting_dic = clients[i].train()
+                for k, v in resulting_dic.items():
+                    self.model.item_vecs[k] += self.lr * 2 * v
+                #self.train_on_client(clients, i)
+        else:
+            prova = multiprocessing.Value('i', 0)
+            tasks = multiprocessing.JoinableQueue()
+            num_workers = multiprocessing.cpu_count() - 1
+            workers = [Worker(tasks, clients, prova) for _ in range(num_workers)]
+            for w in workers:
+                w.start()
+            for i in c_list:
+                tasks.put(i)
+            for i in range(num_workers):
+                tasks.put(None)
+            tasks.join()
+
         self._processing_strategy.train_model(self, clients, c_list)
         self.model.item_vecs -= self.lr * regLambda * bak
         for i in c_list:

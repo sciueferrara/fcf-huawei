@@ -2,10 +2,9 @@ import multiprocessing
 
 
 class Worker(multiprocessing.Process):
-    def __init__(self, task_queue, work, clients, prova):
+    def __init__(self, task_queue, clients, prova):
         multiprocessing.Process.__init__(self)
         self.task_queue = task_queue
-        self.work = work
         self.clients = clients
         self.prova = prova
 
@@ -16,6 +15,7 @@ class Worker(multiprocessing.Process):
                 # Poison pill means shutdown
                 self.task_queue.task_done()
                 break
-            self.work(self.clients, next_task, self.prova)
+            #self.work(self.clients, next_task, self.prova)
+            self.prova.value += 1
             self.task_queue.task_done()
         return

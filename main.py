@@ -20,7 +20,7 @@ def main(args):
 
     #exp_type = utils.create_file_prefix(args.positive_fraction, args.with_delta, args.fraction, args.sampler_size)
 
-    processing_strategy = ProcessingStrategy.MultiProcessing() if args.mp else ProcessingStrategy.SingleProcessing()
+    #processing_strategy = ProcessingStrategy.MultiProcessing() if args.mp else ProcessingStrategy.SingleProcessing()
     send_strategy = SendStrategy.SendDelta() if args.with_delta else SendStrategy.SendVector()
 
     for dataset in args.datasets:
@@ -76,7 +76,7 @@ def main(args):
 
                 # Create server and clients
                 server_model = ServerModel(item_size, n_factors)
-                server = Server(server_model, lr, args.fraction, processing_strategy, send_strategy)
+                server = Server(server_model, lr, args.fraction, args.mp, send_strategy)
                 clients = [Client(u, ClientModel(n_factors), train_sets[u], train_user_lists[u],
                                   validation_user_lists[u], test_user_lists[u]) for u in range(user_size)]
 
