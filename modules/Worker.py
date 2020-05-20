@@ -23,6 +23,7 @@ class Worker(multiprocessing.Process):
             with self.shared_item_vecs.get_lock():
                 item_vecs = np.frombuffer(self.shared_item_vecs.get_obj())
                 for k, v in resulting_dic.items():
+                    print(v)
                     item_vecs[k] += self.lr * 2 * v
             with self.shared_counter.get_lock():
                 self.shared_counter.value += 1
