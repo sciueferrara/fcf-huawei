@@ -18,6 +18,6 @@ class Worker(multiprocessing.Process):
             #self.work(self.clients, next_task, self.prova)
             with self.prova.get_lock():
                 self.prova.value += 1
-                print(self.prova.value)
+                #print(self.prova.value)
             self.task_queue.task_done()
         return

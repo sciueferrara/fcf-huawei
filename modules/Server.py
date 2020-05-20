@@ -15,6 +15,7 @@ class Server:
         self.fraction = fraction
         self.progress = None
         self.mp = mp
+        self.contatore = 0
 
     def select_clients(self, clients, fraction=0.1):
         if fraction == 0:
@@ -54,7 +55,9 @@ class Server:
                     self.model.item_vecs[k] += self.lr * 2 * v
                 #self.train_on_client(clients, i)
         else:
-            prova = multiprocessing.Value('i', 0)
+            prova = multiprocessing.Value('i', self.contatore)
+            #prova = multiprocessing.Array('d', self.model.item_vecs)
+
             tasks = multiprocessing.JoinableQueue()
             num_workers = multiprocessing.cpu_count() - 1
             workers = [Worker(tasks, clients, prova) for _ in range(num_workers)]
@@ -65,6 +68,9 @@ class Server:
             for i in range(num_workers):
                 tasks.put(None)
             tasks.join()
+
+            print(prova.value)
+            print(self.contatore)
 
         #self._processing_strategy.train_model(self, clients, c_list)
         self.model.item_vecs -= self.lr * regLambda * bak
