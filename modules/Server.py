@@ -4,6 +4,8 @@ import sys
 import multiprocessing
 from .Worker import Worker
 import numpy as np
+import scipy as sp
+import scipy.sparse
 
 random.seed(43)
 
@@ -69,7 +71,7 @@ class Server:
             for i in range(num_workers):
                 tasks.put(None)
             tasks.join()
-            self.model.item_vecs = item_vecs.copy()
+            self.model.item_vecs = sp.sparse.csr_matrix(item_vecs)
 
             print(self.model.item_vecs[1])
 
