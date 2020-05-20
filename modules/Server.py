@@ -57,10 +57,10 @@ class Server:
                 #self.train_on_client(clients, i)
         else:
             shared_item_vecs = multiprocessing.Array('d', self.model.item_vecs.size)
-            shared_item_vecs2 = multiprocessing.Array('d', self.model.item_vecs.size)
+            item_vecs = np.frombuffer(shared_item_vecs.get_obj()).reshape(self.model.item_vecs.shape)[:] = self.model.item_vecs
             tasks = multiprocessing.JoinableQueue()
             num_workers = multiprocessing.cpu_count() - 1
-            workers = [Worker(tasks, clients, shared_item_vecs, shared_item_vecs2, self.model.item_vecs.shape, self.lr) for _ in range(num_workers)]
+            workers = [Worker(tasks, clients, shared_item_vecs, self.model.item_vecs.shape, self.lr) for _ in range(num_workers)]
             for w in workers:
                 w.start()
             for i in c_list:
@@ -68,12 +68,12 @@ class Server:
             for i in range(num_workers):
                 tasks.put(None)
             tasks.join()
+            self.model.item_vecs = item_vecs.copy()
 
-            self.model.item_vecs = np.frombuffer(shared_item_vecs2.get_obj()).reshape(self.model.item_vecs.shape).copy()
             print(self.model.item_vecs[1])
 
         #self._processing_strategy.train_model(self, clients, c_list)
-        self.model.item_vecs -= self.lr * regLambda * bak
+        self.model.item_vecs -= 2 * self.lr * regLambda * bak
         for i in c_list:
             self._send_strategy.delete_item_vectors(clients, i)
         self.progress = None

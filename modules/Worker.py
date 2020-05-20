@@ -3,12 +3,11 @@ import numpy as np
 
 
 class Worker(multiprocessing.Process):
-    def __init__(self, task_queue, clients, shared_item_vecs, shared_item_vecs2, shape, lr):
+    def __init__(self, task_queue, clients, shared_item_vecs, shape, lr):
         multiprocessing.Process.__init__(self)
         self.task_queue = task_queue
         self.clients = clients
         self.shared_item_vecs = shared_item_vecs
-        self.shared_item_vecs2 = shared_item_vecs2
         self.shape = shape
         self.lr = lr
 
@@ -19,8 +18,8 @@ class Worker(multiprocessing.Process):
                 # Poison pill means shutdown
                 self.task_queue.task_done()
                 break
-            with self.shared_item_vecs2.get_lock():
-                item_vecs = np.frombuffer(self.shared_item_vecs2.get_obj())
+            with self.shared_item_vecs.get_lock():
+                item_vecs = np.frombuffer(self.shared_item_vecs.get_obj())
                 item_vecs += 1
             # resulting_dic = self.clients[next_task].train()
             # with self.shared_item_vecs.get_lock():
