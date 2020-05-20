@@ -35,8 +35,6 @@ class Server:
         for i in c_list:
             self._send_strategy.send_item_vectors(clients, i, self.model)
         sys.stdout.write('\x1b[1A')
-        sys.stdout.flush()
-        self.progress = ChargingBar('Completing epoch', max=len(c_list), suffix="[%(index)d / %(remaining)d]")
 
         if not self.mp:
             for i in c_list:
@@ -60,6 +58,7 @@ class Server:
                 tasks.put(None)
             tasks.join()
             self.model.item_vecs = sp.sparse.csr_matrix(item_vecs)
+            sys.stdout.write('[1B')
 
         #self._processing_strategy.train_model(self, clients, c_list)
         self.model.item_vecs -= 2 * self.lr * regLambda * bak
