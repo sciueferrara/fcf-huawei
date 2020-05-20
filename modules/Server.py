@@ -27,19 +27,6 @@ class Server:
             idx = random.sample(range(len(clients)), int(fraction*len(clients)))
         return idx
 
-    def train_on_client(self, clients, i, prova):
-        resulting_dic = clients[i].train()
-        for k, v in resulting_dic.items():
-            self.model.item_vecs[k] += self.lr * 2 * v
-        #self.progress.next()
-        self.contatore += 1
-        #print(id(self.contatore))
-        with prova.get_lock():
-            prova.value += 1
-            print(prova.value)
-        #for k, v in resulting_bias.items():
-        #    self.model.item_bias[k] += self.lr * v
-
     def train_model(self, clients):
         regLambda = 0.1
         bak = self.model.item_vecs.copy()
@@ -58,12 +45,13 @@ class Server:
                     self.model.item_vecs[k] += self.lr * 2 * v
                 #self.train_on_client(clients, i)
         else:
+            shared_counter = multiprocessing.Value('i', 0)
             shared_item_vecs = multiprocessing.Array('d', self.model.item_vecs.size)
             item_vecs = np.frombuffer(shared_item_vecs.get_obj()).reshape(self.model.item_vecs.shape)
             item_vecs[:] = self.model.item_vecs.toarray()
             tasks = multiprocessing.JoinableQueue()
             num_workers = multiprocessing.cpu_count() - 1
-            workers = [Worker(tasks, clients, shared_item_vecs, self.model.item_vecs.shape, self.lr) for _ in range(num_workers)]
+            workers = [Worker(tasks, clients, shared_item_vecs, self.model.item_vecs.shape, self.lr, shared_counter) for _ in range(num_workers)]
             for w in workers:
                 w.start()
             for i in c_list:
