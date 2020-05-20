@@ -2,11 +2,12 @@ import multiprocessing
 
 
 class Worker(multiprocessing.Process):
-    def __init__(self, task_queue, clients, prova):
+    def __init__(self, task_queue, clients, shared_item_vecs, lr):
         multiprocessing.Process.__init__(self)
         self.task_queue = task_queue
         self.clients = clients
-        self.prova = prova
+        self.shared_item_vecs = shared_item_vecs
+        self.lr = lr
 
     def run(self):
         while True:
@@ -15,9 +16,9 @@ class Worker(multiprocessing.Process):
                 # Poison pill means shutdown
                 self.task_queue.task_done()
                 break
-            #self.work(self.clients, next_task, self.prova)
-            with self.prova.get_lock():
-                self.prova.value += 1
-                #print(self.prova.value)
+            resulting_dic = self.clients[next_task].train()
+            with self.shared_item_vecs.get_lock():
+                for k, v in resulting_dic.items():
+                    self.shared_item_vecs.item_vecs[k] += self.lr * 2 * v
             self.task_queue.task_done()
         return

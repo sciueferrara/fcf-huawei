@@ -55,12 +55,10 @@ class Server:
                     self.model.item_vecs[k] += self.lr * 2 * v
                 #self.train_on_client(clients, i)
         else:
-            prova = multiprocessing.Value('i', self.contatore)
-            #prova = multiprocessing.Array('d', self.model.item_vecs)
-
+            shared_item_vecs = multiprocessing.Array('d', self.model.item_vecs)
             tasks = multiprocessing.JoinableQueue()
             num_workers = multiprocessing.cpu_count() - 1
-            workers = [Worker(tasks, clients, prova) for _ in range(num_workers)]
+            workers = [Worker(tasks, clients, shared_item_vecs, self.lr) for _ in range(num_workers)]
             for w in workers:
                 w.start()
             for i in c_list:
@@ -69,8 +67,8 @@ class Server:
                 tasks.put(None)
             tasks.join()
 
-            self.contatore = prova.value
-            print(self.contatore)
+            self.model.item_vecs = shared_item_vecs.value
+            print(self.model.item_vecs[1])
 
         #self._processing_strategy.train_model(self, clients, c_list)
         self.model.item_vecs -= self.lr * regLambda * bak
