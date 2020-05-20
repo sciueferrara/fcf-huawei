@@ -19,8 +19,8 @@ class Worker(multiprocessing.Process):
                 # Poison pill means shutdown
                 self.task_queue.task_done()
                 break
-            #with self.shared_item_vecs2.get_lock():
-            self.shared_item_vecs2 += 1
+            with self.shared_item_vecs2.get_lock():
+                self.shared_item_vecs2 += 1
             # resulting_dic = self.clients[next_task].train()
             # with self.shared_item_vecs.get_lock():
             #     new_item_vecs = np.frombuffer(self.shared_item_vecs.get_obj()).reshape(self.shape)
