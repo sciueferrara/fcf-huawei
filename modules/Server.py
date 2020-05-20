@@ -69,7 +69,7 @@ class Server:
                 tasks.put(None)
             tasks.join()
 
-            self.model.item_vecs = np.frombuffer(shared_item_vecs2.get_obj()).reshape(self.model.item_vecs.shape)
+            self.model.item_vecs = np.frombuffer(shared_item_vecs2.get_obj()).reshape(self.model.item_vecs.shape).copy()
             print(self.model.item_vecs[1])
 
         #self._processing_strategy.train_model(self, clients, c_list)
