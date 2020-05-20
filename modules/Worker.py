@@ -8,7 +8,7 @@ class Worker(multiprocessing.Process):
         self.task_queue = task_queue
         self.clients = clients
         self.shared_item_vecs = shared_item_vecs
-        self.shared_item_vecs2 = np.frombuffer(shared_item_vecs2.get_obj()).reshape(self.shape)
+        self.shared_item_vecs2 = np.frombuffer(shared_item_vecs2.get_obj()).reshape(shape)
         self.shape = shape
         self.lr = lr
 
