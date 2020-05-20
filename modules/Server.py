@@ -66,7 +66,7 @@ class Server:
                 tasks.put(None)
             tasks.join()
 
-        self._processing_strategy.train_model(self, clients, c_list)
+        #self._processing_strategy.train_model(self, clients, c_list)
         self.model.item_vecs -= self.lr * regLambda * bak
         for i in c_list:
             self._send_strategy.delete_item_vectors(clients, i)
