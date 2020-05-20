@@ -58,7 +58,7 @@ class Server:
                 tasks.put(None)
             tasks.join()
             self.model.item_vecs = sp.sparse.csr_matrix(item_vecs)
-            sys.stdout.write('[1B')
+            sys.stdout.write('\x1b[1B')
 
         #self._processing_strategy.train_model(self, clients, c_list)
         self.model.item_vecs -= 2 * self.lr * regLambda * bak
