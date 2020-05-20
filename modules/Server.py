@@ -30,7 +30,7 @@ class Server:
         #self.contatore += 1
         #print(id(self.contatore))
         with prova.get_lock():
-            prova += 1
+            prova.value += 1
             print(prova.value)
         #for k, v in resulting_bias.items():
         #    self.model.item_bias[k] += self.lr * v
