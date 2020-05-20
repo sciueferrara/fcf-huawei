@@ -69,7 +69,7 @@ class Server:
                 tasks.put(None)
             tasks.join()
 
-            print(prova.value)
+            self.contatore = prova.value
             print(self.contatore)
 
         #self._processing_strategy.train_model(self, clients, c_list)
