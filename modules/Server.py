@@ -9,7 +9,6 @@ random.seed(43)
 
 class Server:
     def __init__(self, model, lr, fraction, mp, send_strategy):
-        self._processing_strategy = processing_strategy
         self._send_strategy = send_strategy
         self.model = model
         self.lr = lr
