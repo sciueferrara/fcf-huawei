@@ -2,11 +2,12 @@ import multiprocessing
 
 
 class Worker(multiprocessing.Process):
-    def __init__(self, task_queue, work, clients):
+    def __init__(self, task_queue, work, clients, prova):
         multiprocessing.Process.__init__(self)
         self.task_queue = task_queue
         self.work = work
         self.clients = clients
+        self.prova = prova
 
     def run(self):
         while True:
@@ -15,6 +16,6 @@ class Worker(multiprocessing.Process):
                 # Poison pill means shutdown
                 self.task_queue.task_done()
                 break
-            self.work(self.clients, next_task)
+            self.work(self.clients, next_task, self.prova)
             self.task_queue.task_done()
         return

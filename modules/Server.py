@@ -22,13 +22,16 @@ class Server:
             idx = random.sample(range(len(clients)), int(fraction*len(clients)))
         return idx
 
-    def train_on_client(self, clients, i):
+    def train_on_client(self, clients, i, prova):
         resulting_dic = clients[i].train()
         for k, v in resulting_dic.items():
             self.model.item_vecs[k] += self.lr * 2 * v
         #self.progress.next()
-        self.contatore += 1
-        print(id(self.contatore))
+        #self.contatore += 1
+        #print(id(self.contatore))
+        with prova.get_lock():
+            prova += 1
+            print(prova.value)
         #for k, v in resulting_bias.items():
         #    self.model.item_bias[k] += self.lr * v
 
