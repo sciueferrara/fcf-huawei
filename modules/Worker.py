@@ -8,7 +8,7 @@ class Worker(multiprocessing.Process):
         self.task_queue = task_queue
         self.clients = clients
         self.shared_item_vecs = shared_item_vecs
-        self.shared_item_vecs2 = shared_item_vecs2
+        self.shared_item_vecs2 = np.frombuffer(shared_item_vecs2.get_obj()).reshape(self.shape)
         self.shape = shape
         self.lr = lr
 
@@ -20,8 +20,7 @@ class Worker(multiprocessing.Process):
                 self.task_queue.task_done()
                 break
             #with self.shared_item_vecs2.get_lock():
-            new_item_vecs2 = np.frombuffer(self.shared_item_vecs.get_obj()).reshape(self.shape)
-            new_item_vecs2 += 1
+            self.shared_item_vecs2 += 1
             # resulting_dic = self.clients[next_task].train()
             # with self.shared_item_vecs.get_lock():
             #     new_item_vecs = np.frombuffer(self.shared_item_vecs.get_obj()).reshape(self.shape)
