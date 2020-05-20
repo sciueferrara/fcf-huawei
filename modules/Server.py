@@ -57,7 +57,8 @@ class Server:
                 #self.train_on_client(clients, i)
         else:
             shared_item_vecs = multiprocessing.Array('d', self.model.item_vecs.size)
-            item_vecs = np.frombuffer(shared_item_vecs.get_obj()).reshape(self.model.item_vecs.shape)[:] = self.model.item_vecs
+            item_vecs = np.frombuffer(shared_item_vecs.get_obj()).reshape(self.model.item_vecs.shape)
+            item_vecs[:] = self.model.item_vecs.toarray()
             tasks = multiprocessing.JoinableQueue()
             num_workers = multiprocessing.cpu_count() - 1
             workers = [Worker(tasks, clients, shared_item_vecs, self.model.item_vecs.shape, self.lr) for _ in range(num_workers)]
