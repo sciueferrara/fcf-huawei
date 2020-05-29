@@ -6,6 +6,7 @@ from .Worker import Worker
 import numpy as np
 import scipy as sp
 import scipy.sparse
+import copy
 
 random.seed(43)
 
@@ -37,10 +38,13 @@ class Server:
         sys.stdout.write('\x1b[1A')
 
         if not self.mp:
+            self.bak_model = copy.deepcopy(self.model)
             for i in c_list:
-                resulting_dic = clients[i].train()
-                for k, v in resulting_dic.items():
-                    self.model.item_vecs[k] += self.lr * 2 * v
+                clients[i].train(self.bak_model, self.model, self.lr)
+            self.bak_model = None
+
+                #for k, v in resulting_dic.items():
+                #    self.model.item_vecs[k] += self.lr * 2 * v
                 #self.train_on_client(clients, i)
         else:
             shared_counter = multiprocessing.Value('i', 0)
@@ -70,7 +74,5 @@ class Server:
     def predict(self, clients, max_k):
         predictions = []
         for i, c in enumerate(clients):
-            self._send_strategy.send_item_vectors(clients, i, self.model)
-            predictions.append(c.predict(max_k))
-            self._send_strategy.delete_item_vectors(clients, i)
+            predictions.append(c.predict(self.model, max_k))
         return predictions
