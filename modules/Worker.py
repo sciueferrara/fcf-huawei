@@ -23,7 +23,7 @@ class Worker(multiprocessing.Process):
                 self.task_queue.task_done()
                 break
             regLambda = 0.1
-            reg = sp.sparse.csr_matrix(regLambda * np.eye(starting_model.item_vecs.shape[1]))
+            reg = sp.sparse.csr_matrix(regLambda * np.eye(self.starting_model.item_vecs.shape[1]))
 
             Yt = self.starting_model.item_vecs.T
             YtY = Yt.dot(self.starting_model.item_vecs)
