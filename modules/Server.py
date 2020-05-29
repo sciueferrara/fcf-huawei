@@ -39,7 +39,8 @@ class Server:
 
         if not self.mp:
             self.bak_model = copy.deepcopy(self.model)
-            for i in c_list:
+            for e, i in enumerate(c_list):
+                print('User ', e)
                 clients[i].train(self.bak_model, self.model, self.lr)
             self.bak_model = None
 
