@@ -54,7 +54,7 @@ class Server:
             item_vecs[:] = self.model.item_vecs.toarray()
             tasks = multiprocessing.JoinableQueue()
             num_workers = multiprocessing.cpu_count()
-            workers = [Worker(tasks, clients, shared_item_vecs, self.model.item_vecs.shape, self.lr, shared_counter) for _ in range(num_workers)]
+            workers = [Worker(tasks, clients, shared_item_vecs, self.model.item_vecs.shape, self.lr, shared_counter, self.bak_model) for _ in range(num_workers)]
             for w in workers:
                 w.start()
             for i in c_list:
