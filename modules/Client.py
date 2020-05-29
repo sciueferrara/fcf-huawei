@@ -7,12 +7,10 @@ import scipy.sparse.linalg
 
 
 class Client:
-    def __init__(self, client_id, model, train, train_user_list, validation_user_list, test_user_list):
+    def __init__(self, client_id, model, train, train_user_list):
         self.id = client_id
         self.model = model
         self.train_user_list = train_user_list
-        self.validation_user_list = validation_user_list
-        self.test_user_list = test_user_list
         self.train_set = train
         self.Cu = sp.sparse.diags(train, 0)
         self.I = sp.sparse.diags(np.repeat(1, len(train)), 0)

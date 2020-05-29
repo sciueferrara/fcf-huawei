@@ -38,10 +38,20 @@ def convert_unique_idx(df, column_name):
     return df
 
 
-def create_user_lists(df, user_size):
+def convert_unique_idx(df, column_name):
+    column_dict = {x: i for i, x in enumerate(df[column_name].unique())}
+    reverse_dict = {i: x for i, x in enumerate(df[column_name].unique())}
+    df[column_name] = df[column_name].apply(column_dict.get)
+    df[column_name] = df[column_name].astype('int')
+    assert df[column_name].min() == 0
+    assert df[column_name].max() == len(column_dict) - 1
+    return df, reverse_dict
+
+
+def create_user_lists(df, user_size, column_idx):
     user_list = [dict() for _ in range(user_size)]
     for row in df.itertuples():
-        user_list[row.user_id][row.item_id] = row.utc
+        user_list[row.user_id][row.item_id] = row[column_idx]
     return user_list
 
 
