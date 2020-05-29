@@ -32,8 +32,6 @@ class Worker(multiprocessing.Process):
             self.clients[next_task].model.user_vec = sp.sparse.csr_matrix(sp.sparse.linalg.spsolve(YTCuY + reg, Yt.dot(self.clients[next_task].Cu).dot(
                 sp.sparse.csr_matrix(np.ones(len(self.clients[next_task].train_set))).T)))
 
-
-            resulting_dic = self.clients[next_task].train()
             with self.shared_item_vecs.get_lock():
                 item_vecs = np.frombuffer(self.shared_item_vecs.get_obj()).reshape(self.shape)
                 for i in range(len(self.clients[next_task].train_set)):
