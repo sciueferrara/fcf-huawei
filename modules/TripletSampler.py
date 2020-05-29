@@ -10,7 +10,7 @@ class TripletSampler:
         self.sampler_size = sampler_size
 
     def sample_user_triples(self):
-        for _ in range(self.sampler_size):
+        for _ in range(20):
             i = np.random.choice(self.train_user_list)
             j = np.random.randint(self.item_size)
             while j in self.train_user_list:
