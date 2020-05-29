@@ -51,7 +51,7 @@ class Worker(multiprocessing.Process):
 
                 with self.shared_item_vecs.get_lock():
                     item_vecs = np.frombuffer(self.shared_item_vecs.get_obj()).reshape(self.shape)
-                    item_vecs[i] += self.lr / (vhat.power(1/2) + eps) * mhat
+                    item_vecs[i] += self.lr / (vhat.power(1/2)) * mhat
             with self.shared_counter.get_lock():
                 self.shared_counter.value += 1
                 print("Processing clients {} / {}\r".format(self.shared_counter.value, len(self.clients)), end="")
