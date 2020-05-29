@@ -48,6 +48,7 @@ class Server:
                 #    self.model.item_vecs[k] += self.lr * 2 * v
                 #self.train_on_client(clients, i)
         else:
+            self.bak_model = copy.deepcopy(self.model)
             shared_counter = multiprocessing.Value('i', 0)
             shared_item_vecs = multiprocessing.Array('d', self.model.item_vecs.size)
             item_vecs = np.frombuffer(shared_item_vecs.get_obj()).reshape(self.model.item_vecs.shape)
