@@ -2,7 +2,7 @@ import multiprocessing
 import numpy as np
 import scipy as sp
 import scipy.sparse
-
+import math
 
 class Worker(multiprocessing.Process):
     def __init__(self, task_queue, clients, shared_item_vecs, shape, lr, shared_counter, starting_model):
@@ -15,8 +15,15 @@ class Worker(multiprocessing.Process):
         self.lr = lr
         self.starting_model = starting_model
 
+
+
+
+
     def run(self):
         while True:
+            eps = 0.00000000001
+            b1 = 0.05
+            b2 = 0.05
             next_task = self.task_queue.get()
             if next_task is None:
                 # Poison pill means shutdown
@@ -33,12 +40,18 @@ class Worker(multiprocessing.Process):
                 sp.sparse.csr_matrix(np.ones(len(self.clients[next_task].train_set))).T)))
 
             for i in range(len(self.clients[next_task].train_set)):
-                valore = self.lr * 2 * (
+                grad = 2 * (
                         sp.sparse.csr_matrix(self.clients[next_task].train_set[i]) - self.clients[next_task].model.user_vec.dot(
                     self.starting_model.item_vecs[i].T)) * self.clients[next_task].model.user_vec
+
+                self.clients[next_task].m = b1 * self.clients[next_task].m + (1 - b1) * grad
+                mhat = self.clients[next_task].m / (1 - b1)
+                self.clients[next_task].v = b2 * self.clients[next_task].v + (1 - b2) * grad**2
+                vhat = self.clients[next_task].v / (1 - b2)
+
                 with self.shared_item_vecs.get_lock():
                     item_vecs = np.frombuffer(self.shared_item_vecs.get_obj()).reshape(self.shape)
-                    item_vecs[i] += valore
+                    item_vecs[i] += self.lr / (math.sqrt(vhat) + eps) * mhat
             with self.shared_counter.get_lock():
                 self.shared_counter.value += 1
                 print("Processing clients {} / {}\r".format(self.shared_counter.value, len(self.clients)), end="")

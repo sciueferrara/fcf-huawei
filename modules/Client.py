@@ -14,6 +14,8 @@ class Client:
         self.train_set = train
         self.Cu = sp.sparse.diags(train, 0)
         self.I = sp.sparse.diags(np.repeat(1, len(train)), 0)
+        self.m = 0
+        self.v = 0
 
     def predict(self, server_model, max_k):
         result = self.model.predict(server_model)
