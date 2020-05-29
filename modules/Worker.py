@@ -46,7 +46,7 @@ class Worker(multiprocessing.Process):
 
                 self.clients[next_task].m = b1 * self.clients[next_task].m + (1 - b1) * grad
                 mhat = self.clients[next_task].m / (1 - b1)
-                self.clients[next_task].v = b2 * self.clients[next_task].v + (1 - b2) * grad**2
+                self.clients[next_task].v = b2 * self.clients[next_task].v + (1 - b2) * grad.power(2)
                 vhat = self.clients[next_task].v / (1 - b2)
 
                 with self.shared_item_vecs.get_lock():
