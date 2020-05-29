@@ -32,12 +32,13 @@ class Worker(multiprocessing.Process):
             self.clients[next_task].model.user_vec = sp.sparse.csr_matrix(sp.sparse.linalg.spsolve(YTCuY + reg, Yt.dot(self.clients[next_task].Cu).dot(
                 sp.sparse.csr_matrix(np.ones(len(self.clients[next_task].train_set))).T)))
 
-            with self.shared_item_vecs.get_lock():
-                item_vecs = np.frombuffer(self.shared_item_vecs.get_obj()).reshape(self.shape)
                 for i in range(len(self.clients[next_task].train_set)):
-                    item_vecs[i] += self.lr * 2 * (
+                    valore = self.lr * 2 * (
                             sp.sparse.csr_matrix(self.clients[next_task].train_set[i]) - self.clients[next_task].model.user_vec.dot(
                         self.starting_model.item_vecs[i].T)) * self.clients[next_task].model.user_vec
+                    with self.shared_item_vecs.get_lock():
+                        item_vecs = np.frombuffer(self.shared_item_vecs.get_obj()).reshape(self.shape)
+                        item_vecs[i] += valore
             with self.shared_counter.get_lock():
                 self.shared_counter.value += 1
                 print("Processing clients {} / {}\r".format(self.shared_counter.value, len(self.clients)), end="")
