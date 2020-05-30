@@ -49,13 +49,22 @@ class Server:
                 #self.train_on_client(clients, i)
         else:
             self.bak_model = copy.deepcopy(self.model)
+            print('fatto1')
             shared_counter = multiprocessing.Value('i', 0)
             shared_item_vecs = multiprocessing.Array('d', self.model.item_vecs.size)
+            print('fatto2')
+
             item_vecs = np.frombuffer(shared_item_vecs.get_obj()).reshape(self.model.item_vecs.shape)
+            print('fatto3')
+
             item_vecs[:] = self.model.item_vecs.toarray()
+            print('fatto4')
+
             tasks = multiprocessing.JoinableQueue()
             num_workers = int(multiprocessing.cpu_count() / 2)
             workers = [Worker(tasks, clients, shared_item_vecs, self.model.item_vecs.shape, self.lr, shared_counter, self.bak_model) for _ in range(num_workers)]
+            print('fatto5')
+
             for w in workers:
                 w.start()
             for i in c_list:
