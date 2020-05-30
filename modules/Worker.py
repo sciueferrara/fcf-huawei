@@ -43,8 +43,8 @@ class Worker(multiprocessing.Process):
             #print(len(self.clients[next_task].train_set))
             #for i in range(len(self.clients[next_task].train_set)):
             grad = self.lr * 2 * (
-                    sp.sparse.csr_matrix(self.clients[next_task].train_set[i]) - self.clients[next_task].model.user_vec.dot(
-                self.starting_model.item_vecs[i].T)) * self.clients[next_task].model.user_vec
+                    sp.sparse.csr_matrix(self.clients[next_task].train_set) - self.clients[next_task].model.user_vec.dot(
+                self.starting_model.item_vecs.T)) * self.clients[next_task].model.user_vec
             print('fatto')
 
                 # self.clients[next_task].m = b1 * self.clients[next_task].m + (1 - b1) * grad
@@ -54,8 +54,7 @@ class Worker(multiprocessing.Process):
 
             with self.shared_item_vecs.get_lock():
                 item_vecs = np.frombuffer(self.shared_item_vecs.get_obj()).reshape(self.shape)
-                item_vecs += grad
-            print('fatto2')
+                item_vecs[i] += grad
             with self.shared_counter.get_lock():
                 self.shared_counter.value += 1
                 print("Processing clients {} / {}\r".format(self.shared_counter.value, len(self.clients)), end="")
