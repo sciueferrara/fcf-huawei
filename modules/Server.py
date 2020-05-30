@@ -29,7 +29,7 @@ class Server:
         return idx
 
     def train_model(self, clients):
-        regLambda = 0.1
+        regLambda = 1
         bak = self.model.item_vecs.copy()
         item_vecs_bak, item_bias_bak = self._send_strategy.backup_item_vectors(self.model) or (None, None)
         c_list = self.select_clients(clients, self.fraction)
