@@ -29,6 +29,11 @@ class Worker(multiprocessing.Process):
                 # Poison pill means shutdown
                 self.task_queue.task_done()
                 break
+
+            with self.shared_counter.get_lock():
+                self.shared_counter.value += 1
+                print("Processing clients {} / {}\r".format(self.shared_counter.value, len(self.clients)), end="")
+
             regLambda = 1
             reg = sp.sparse.csr_matrix(regLambda * np.eye(self.starting_model.item_vecs.shape[1]))
 
@@ -43,16 +48,8 @@ class Worker(multiprocessing.Process):
                                   self.clients[next_task].model.user_vec * self.starting_model.item_vecs.T).T *\
                    self.clients[next_task].model.user_vec
 
-                # self.clients[next_task].m = b1 * self.clients[next_task].m + (1 - b1) * grad
-                # mhat = self.clients[next_task].m / (1 - b1)
-                # self.clients[next_task].v = b2 * self.clients[next_task].v + (1 - b2) * grad.power(2)
-                # vhat = self.clients[next_task].v / (1 - b2)
-
             with self.shared_item_vecs.get_lock():
                 item_vecs = np.frombuffer(self.shared_item_vecs.get_obj()).reshape(self.shape)
                 item_vecs += grad
-            with self.shared_counter.get_lock():
-                self.shared_counter.value += 1
-                print("Processing clients {} / {}\r".format(self.shared_counter.value, len(self.clients)), end="")
             self.task_queue.task_done()
         return
