@@ -7,6 +7,7 @@ import argparse
 from modules import Server, ServerModel, Client, ClientModel, TripletSampler, ProcessingStrategy, SendStrategy
 import utils.utils as utils
 from progress.bar import IncrementalBar
+from collections import defaultdict
 
 np.random.seed(43)
 random.seed(43)
@@ -37,15 +38,17 @@ def main(args):
         train_user_lists = utils.create_user_lists(df, user_size, 3)
         train_interactions_size = sum([len(user_list) for user_list in train_user_lists])
         print('{} interactions considered for training'.format(train_interactions_size))
-        train_sets_tmp = [{k: 1 for k in train_user_lists[u]} for u in range(user_size)]
+
         train_sets = []
-
         for u in range(user_size):
+            s = set(train_user_lists[u])
+            train_sets.append([])
             for i in range(item_size):
-                train_sets_tmp[u].setdefault(i, 0)
-            train_sets.append([v for _, v in sorted(train_sets_tmp[u].items())])
+                train_set[u].append(1 if i in train_user_lists[u] else 0)
 
-        del train_sets_tmp
+
+        #train_sets_tmp = [{k: 1 for k in train_user_lists[u]} for u in range(user_size)]
+        #train_sets = []
 
         for n_factors in args.n_factors:
             exp_setting_1 = "_F" + str(n_factors)
