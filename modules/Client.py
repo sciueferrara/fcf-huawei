@@ -25,6 +25,7 @@ class Client:
         top_k = unordered_top_k[np.argsort(result[unordered_top_k,0])][::-1]
         top_k_score = result[top_k]
         prediction = {top_k[i]: top_k_score[i] for i in range(len(top_k))}
+        print(prediction)
 
         return prediction
 
