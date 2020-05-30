@@ -67,7 +67,7 @@ def main(args):
                     # Evaluation
                     if ((i + 1) % (args.eval_every)) == 0:
                         exp_setting_3 = exp_setting_2 + "_I" + str((i + 1))
-                        results = server.predict(clients, max_k=100)
+                        results = server.predict(clients, max_k=10)
                         with open('results/{}/{}.tsv'.format(dataset, exp_setting_3), 'w') as out:
                             for u in range(len(results)):
                                 for e, p in results[u].items():
