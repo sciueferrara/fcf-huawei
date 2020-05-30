@@ -68,7 +68,6 @@ class Server:
 
         #self._processing_strategy.train_model(self, clients, c_list)
         self.model.item_vecs -= 2 * self.lr * regLambda * bak
-        print(self.model.item_vecs)
         for i in c_list:
             self._send_strategy.delete_item_vectors(clients, i)
         self.progress = None
