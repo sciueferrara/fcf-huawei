@@ -21,10 +21,11 @@ class Client:
         result = self.model.predict(server_model)
         result[list(self.train_user_list)] = -np.inf
         # the very fast top_k :-)
-        unordered_top_k = np.argpartition(result.toarray().flatten(), -max_k)[-max_k:]
-        top_k = unordered_top_k[np.argsort(result[unordered_top_k,0])][::-1]
-        top_k_score = result[top_k]
-        prediction = {top_k[i]: top_k_score[i][0,0] for i in range(len(top_k))}
+        result = result.toarray().flatten()
+        unordered_top_k = np.argpartition(result, -max_k)[-max_k:]
+        top_k = unordered_top_k[np.argsort(result[unordered_top_k])][::-1]
+        top_k_score = result.toarray().flatten()[top_k]
+        prediction = {top_k[i]: top_k_score[i] for i in range(len(top_k))}
 
         return prediction
 
