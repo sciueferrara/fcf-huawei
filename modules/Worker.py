@@ -39,13 +39,9 @@ class Worker(multiprocessing.Process):
             self.clients[next_task].model.user_vec = sp.sparse.csr_matrix(sp.sparse.linalg.spsolve(YTCuY + reg, Yt.dot(self.clients[next_task].Cu).dot(
                 sp.sparse.csr_matrix(np.ones(len(self.clients[next_task].train_set))).T)))
 
-            print('inizio')
-
             grad = self.lr * 2 * (sp.sparse.csr_matrix(self.clients[next_task].train_set) -
                                   self.clients[next_task].model.user_vec * self.starting_model.item_vecs.T).T *\
                    self.clients[next_task].model.user_vec
-
-            print('fatto')
 
                 # self.clients[next_task].m = b1 * self.clients[next_task].m + (1 - b1) * grad
                 # mhat = self.clients[next_task].m / (1 - b1)
