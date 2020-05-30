@@ -32,13 +32,16 @@ class Worker(multiprocessing.Process):
             regLambda = 0.1
             reg = sp.sparse.csr_matrix(regLambda * np.eye(self.starting_model.item_vecs.shape[1]))
 
+            print('parte1')
             Yt = self.starting_model.item_vecs.T
             YtY = Yt.dot(self.starting_model.item_vecs)
 
+            print('parte2')
             YTCuY = YtY + Yt.dot(self.clients[next_task].Cu - self.clients[next_task].I).dot(self.starting_model.item_vecs)
             self.clients[next_task].model.user_vec = sp.sparse.csr_matrix(sp.sparse.linalg.spsolve(YTCuY + reg, Yt.dot(self.clients[next_task].Cu).dot(
                 sp.sparse.csr_matrix(np.ones(len(self.clients[next_task].train_set))).T)))
 
+            print('parte3')
             for i in range(len(self.clients[next_task].train_set)):
                 grad = self.lr * 2 * (
                         sp.sparse.csr_matrix(self.clients[next_task].train_set[i]) - self.clients[next_task].model.user_vec.dot(
