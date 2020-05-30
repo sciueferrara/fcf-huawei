@@ -24,7 +24,7 @@ class Client:
         result = result.toarray().flatten()
         unordered_top_k = np.argpartition(result, -max_k)[-max_k:]
         top_k = unordered_top_k[np.argsort(result[unordered_top_k])][::-1]
-        top_k_score = result.toarray().flatten()[top_k]
+        top_k_score = result[top_k]
         prediction = {top_k[i]: top_k_score[i] for i in range(len(top_k))}
 
         return prediction
