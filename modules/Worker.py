@@ -29,7 +29,7 @@ class Worker(multiprocessing.Process):
                 # Poison pill means shutdown
                 self.task_queue.task_done()
                 break
-            regLambda = 0.1
+            regLambda = 1
             reg = sp.sparse.csr_matrix(regLambda * np.eye(self.starting_model.item_vecs.shape[1]))
 
             Yt = self.starting_model.item_vecs.T
