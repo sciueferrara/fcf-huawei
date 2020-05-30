@@ -71,6 +71,8 @@ class Server:
                 tasks.put(i)
             for i in range(num_workers):
                 tasks.put(None)
+            print('fatto6')
+
             tasks.join()
             self.model.item_vecs = sp.sparse.csr_matrix(item_vecs)
             sys.stdout.write('\x1b[1B')
