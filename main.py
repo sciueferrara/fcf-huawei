@@ -44,7 +44,7 @@ def main(args):
             s = set(train_user_lists[u])
             train_sets.append([])
             for i in range(item_size):
-                train_set[u].append(1 if i in train_user_lists[u] else 0)
+                train_sets[u].append(1 if i in s else 0)
 
 
         #train_sets_tmp = [{k: 1 for k in train_user_lists[u]} for u in range(user_size)]
