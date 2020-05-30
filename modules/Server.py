@@ -61,7 +61,7 @@ class Server:
             print('fatto4')
 
             tasks = multiprocessing.JoinableQueue()
-            num_workers = int(multiprocessing.cpu_count() / 2)
+            num_workers = int(multiprocessing.cpu_count())
             workers = [Worker(tasks, clients, shared_item_vecs, self.model.item_vecs.shape, self.lr, shared_counter, self.bak_model) for _ in range(num_workers)]
             print('fatto5')
 
