@@ -42,7 +42,7 @@ class Worker(multiprocessing.Process):
             print('inizio')
 
             grad = self.lr * 2 * (sp.sparse.csr_matrix(self.clients[next_task].train_set) -
-                                  self.clients[next_task].model.user_vec * self.starting_model.item_vecs).T *\
+                                  self.clients[next_task].model.user_vec * self.starting_model.item_vecs.T).T *\
                    self.clients[next_task].model.user_vec
 
             #print(len(self.clients[next_task].train_set))
