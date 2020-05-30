@@ -30,11 +30,11 @@ class Server:
 
     def train_model(self, clients):
         regLambda = 1
-        bak = self.model.item_vecs.copy()
+        #bak = self.model.item_vecs.copy()
         item_vecs_bak, item_bias_bak = self._send_strategy.backup_item_vectors(self.model) or (None, None)
         c_list = self.select_clients(clients, self.fraction)
-        for i in c_list:
-            self._send_strategy.send_item_vectors(clients, i, self.model)
+        #for i in c_list:
+        #    self._send_strategy.send_item_vectors(clients, i, self.model)
         sys.stdout.write('\x1b[1A')
 
         if not self.mp:
@@ -78,7 +78,7 @@ class Server:
             sys.stdout.write('\x1b[1B')
 
         #self._processing_strategy.train_model(self, clients, c_list)
-        self.model.item_vecs -= 2 * self.lr * regLambda * bak
+        self.model.item_vecs -= 2 * self.lr * regLambda * self.bak_model.item_vecs
         for i in c_list:
             self._send_strategy.delete_item_vectors(clients, i)
         self.progress = None
