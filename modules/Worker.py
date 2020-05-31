@@ -44,8 +44,6 @@ class Worker(multiprocessing.Process):
             calcolo = sp.sparse.csr_matrix(sp.sparse.linalg.spsolve(YTCuY + reg, Yt.dot(clients[id].Cu).dot(
                 clients[id].train_set.T)))
             print(calcolo)
-            print(next_task)
-            print(clients[id].id)
             clients[id].model.user_vec = calcolo
             print(clients[id].model.user_vec)
 
