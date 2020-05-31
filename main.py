@@ -7,7 +7,8 @@ import argparse
 from modules import Server, ServerModel, Client, ClientModel, TripletSampler, ProcessingStrategy, SendStrategy
 import utils.utils as utils
 from progress.bar import IncrementalBar
-from collections import defaultdict
+import scipy as sp
+import scipy.sparse
 
 np.random.seed(43)
 random.seed(43)
@@ -45,6 +46,7 @@ def main(args):
             train_sets.append([])
             for i in range(item_size):
                 train_sets[u].append(1 if i in s else 0)
+            train_sets[u] = sp.sparse.csr_matrix(train_sets[u])
 
 
         #train_sets_tmp = [{k: 1 for k in train_user_lists[u]} for u in range(user_size)]
@@ -68,6 +70,7 @@ def main(args):
                     bar.next()
                     server.train_model(clients)
 
+                    print(clients[0].model.user_vec)
                     # Evaluation
                     if ((i + 1) % (args.eval_every)) == 0:
                         exp_setting_3 = exp_setting_2 + "_I" + str((i + 1))
