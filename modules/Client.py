@@ -11,6 +11,7 @@ class Client:
         self.id = client_id
         self.model = model
         self.train_user_list = train_user_list
+        self.train_user_set = set(train_user_list)
         self.train_set = train
         self.Cu = sp.sparse.diags(train.A.ravel())
         self.I = sp.sparse.diags(np.repeat(1, train.shape[1]), 0)

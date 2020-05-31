@@ -55,6 +55,7 @@ class Worker(multiprocessing.Process):
 
             with self.shared_item_vecs.get_lock():
                 item_vecs = np.frombuffer(self.shared_item_vecs.get_obj()).reshape(self.shape)
-                item_vecs += grad
+                for i in self.clients[next_task].train_user_set:
+                    item_vecs[i] += grad[i]
             self.task_queue.task_done()
         return
