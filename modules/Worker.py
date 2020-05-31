@@ -53,8 +53,7 @@ class Worker(multiprocessing.Process):
                 print(self.shared_user_vecs[next_task])
 
             grad = self.lr * 2 * (sp.sparse.csr_matrix(self.clients[next_task].train_set) -
-                                  self.shared_user_vecs[next_task] * self.starting_model.item_vecs.T).T *\
-                   self.shared_user_vecs[next_task]
+                                  calcolo * self.starting_model.item_vecs.T).T * calcolo
 
             with self.shared_item_vecs.get_lock():
                 item_vecs = np.frombuffer(self.shared_item_vecs.get_obj()).reshape(self.shape)
