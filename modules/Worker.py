@@ -5,7 +5,7 @@ import scipy.sparse
 import math
 
 class Worker(multiprocessing.Process):
-    def __init__(self, task_queue, clients, shared_item_vecs, shared_user_vecs, shape, lr, shared_counter, starting_model):
+    def __init__(self, task_queue, clients, shared_item_vecs, shared_user_vecs, shape, shape_uv, lr, shared_counter, starting_model):
         multiprocessing.Process.__init__(self)
         self.task_queue = task_queue
         self.shared_item_vecs = shared_item_vecs
@@ -15,6 +15,7 @@ class Worker(multiprocessing.Process):
         self.lr = lr
         self.starting_model = starting_model
         self.clients = clients
+        self.shape_uv = shape_uv
 
 
 
@@ -47,6 +48,7 @@ class Worker(multiprocessing.Process):
             print(calcolo)
 
             with self.shared_item_vecs.get_lock():
+                user_vecs = np.frombuffer(self.shared_user_vecs.get_obj()).reshape(self.shape_uv)
                 self.shared_user_vecs[next_task] = calcolo
                 print(self.shared_user_vecs[next_task])
 

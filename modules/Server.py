@@ -63,7 +63,7 @@ class Server:
 
             tasks = multiprocessing.JoinableQueue()
             num_workers = int(multiprocessing.cpu_count())
-            workers = [Worker(tasks, clients, shared_item_vecs, shared_user_vecs, self.model.item_vecs.shape, self.lr, shared_counter, self.bak_model) for _ in range(num_workers)]
+            workers = [Worker(tasks, clients, shared_item_vecs, shared_user_vecs, self.model.item_vecs.shape, (len(clients), self.model.item_vecs.shape[1]), self.lr, shared_counter, self.bak_model) for _ in range(num_workers)]
 
             for w in workers:
                 w.start()
