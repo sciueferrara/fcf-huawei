@@ -69,6 +69,7 @@ class Server:
             for w in workers:
                 w.start()
             for i in c_list:
+                print(i)
                 tasks.put(i)
             for i in range(num_workers):
                 tasks.put(None)
