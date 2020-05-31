@@ -24,12 +24,12 @@ class Worker(multiprocessing.Process):
             b1 = 0.05
             b2 = 0.05
             next_task = self.task_queue.get()
-            clients, id = next_task
             if next_task is None:
                 # Poison pill means shutdown
                 self.task_queue.task_done()
                 break
 
+            clients, id = next_task
             with self.shared_counter.get_lock():
                 self.shared_counter.value += 1
                 print("Processing clients {} / {}\r".format(self.shared_counter.value, len(clients)), end="")
