@@ -58,7 +58,7 @@ class Server:
 
             shared_user_vecs = multiprocessing.Array('d', len(clients) * self.model.item_vecs.shape[1])
             user_vecs = np.frombuffer(shared_user_vecs.get_obj()).reshape(len(clients), self.model.item_vecs.shape[1])
-            user_vecs[:] = self.model.item_vecs.toarray()
+            #user_vecs[:] = self.model.item_vecs.toarray()
 
 
             tasks = multiprocessing.JoinableQueue()
