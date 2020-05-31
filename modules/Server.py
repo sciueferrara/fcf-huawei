@@ -51,30 +51,37 @@ class Server:
         else:
             self.bak_model = copy.deepcopy(self.model)
             shared_counter = multiprocessing.Value('i', 0)
-            shared_item_vecs = multiprocessing.Array('d', self.model.item_vecs.size)
 
+            shared_item_vecs = multiprocessing.Array('d', self.model.item_vecs.size)
             item_vecs = np.frombuffer(shared_item_vecs.get_obj()).reshape(self.model.item_vecs.shape)
             item_vecs[:] = self.model.item_vecs.toarray()
 
+            shared_user_vecs = multiprocessing.Array('d', (len(clients), self.model.item_vecs.shape[1]))
+            user_vecs = np.frombuffer(shared_user_vecs.get_obj()).reshape(len(clients), self.model.item_vecs.shape[1])
+            user_vecs[:] = self.model.item_vecs.toarray()
+
+
             tasks = multiprocessing.JoinableQueue()
             num_workers = int(multiprocessing.cpu_count())
-            workers = [Worker(tasks, shared_item_vecs, self.model.item_vecs.shape, self.lr, shared_counter, self.bak_model) for _ in range(num_workers)]
+            workers = [Worker(tasks, clients, shared_item_vecs, shared_user_vecs, self.model.item_vecs.shape, self.lr, shared_counter, self.bak_model) for _ in range(num_workers)]
 
             for w in workers:
                 w.start()
             for i in c_list:
-                tasks.put((clients, i))
+                tasks.put(i)
             for i in range(num_workers):
                 tasks.put(None)
 
             tasks.join()
             self.model.item_vecs = sp.sparse.csr_matrix(item_vecs)
+            for i in c_list:
+                clients[i].model.user_vec = sp.sparse.csr_matrix(user_vecs[i])
+
             sys.stdout.write('\x1b[1B')
 
         #self._processing_strategy.train_model(self, clients, c_list)
         self.model.item_vecs -= 2 * self.lr * regLambda * self.bak_model.item_vecs
-        for i in c_list:
-            self._send_strategy.delete_item_vectors(clients, i)
+            #self._send_strategy.delete_item_vectors(clients, i)
         self.progress = None
         self._send_strategy.update_deltas(self.model, item_vecs_bak, item_bias_bak)
 
