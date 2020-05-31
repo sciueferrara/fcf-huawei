@@ -58,7 +58,7 @@ def main(args):
                 # Create server and clients
                 server_model = ServerModel(item_size, n_factors)
                 server = Server(server_model, lr, args.fraction, args.mp, send_strategy)
-                print(train_sets[0])
+                print(train_sets[1])
                 clients = [Client(u, ClientModel(n_factors), train_sets[u], train_user_lists[u]) for u in range(user_size)]
 
                 print('\n\n')
