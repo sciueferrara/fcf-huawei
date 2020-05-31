@@ -45,7 +45,6 @@ class Worker(multiprocessing.Process):
             YTCuY = YtY + Yt.dot(self.clients[next_task].Cu - self.clients[next_task].I).dot(self.starting_model.item_vecs)
             calcolo = sp.sparse.csr_matrix(sp.sparse.linalg.spsolve(YTCuY + reg, Yt.dot(self.clients[next_task].Cu).dot(
                 self.clients[next_task].train_set.T)))
-            print(calcolo)
 
             with self.shared_item_vecs.get_lock():
                 user_vecs = np.frombuffer(self.shared_user_vecs.get_obj()).reshape(self.shape_uv)
