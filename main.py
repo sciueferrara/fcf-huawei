@@ -70,7 +70,6 @@ def main(args):
                     bar.next()
                     server.train_model(clients)
 
-                    print(clients[0].model.user_vec)
                     # Evaluation
                     if ((i + 1) % (args.eval_every)) == 0:
                         exp_setting_3 = exp_setting_2 + "_I" + str((i + 1))
