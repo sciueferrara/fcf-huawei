@@ -56,10 +56,7 @@ class Server:
             item_vecs = np.frombuffer(shared_item_vecs.get_obj()).reshape(self.model.item_vecs.shape)
             item_vecs[:] = self.model.item_vecs.toarray()
 
-            print(self.model.item_vecs.shape)
-            print(self.model.item_vecs.size)
-
-            shared_user_vecs = multiprocessing.Array('d', (len(clients), self.model.item_vecs.shape[1]))
+            shared_user_vecs = multiprocessing.Array('d', len(clients) * self.model.item_vecs.shape[1])
             user_vecs = np.frombuffer(shared_user_vecs.get_obj()).reshape(len(clients), self.model.item_vecs.shape[1])
             user_vecs[:] = self.model.item_vecs.toarray()
 
