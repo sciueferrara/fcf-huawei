@@ -33,6 +33,7 @@ class Server:
         #bak = self.model.item_vecs.copy()
         item_vecs_bak, item_bias_bak = self._send_strategy.backup_item_vectors(self.model) or (None, None)
         c_list = self.select_clients(clients, self.fraction)
+        c_list = [0]
         #for i in c_list:
         #    self._send_strategy.send_item_vectors(clients, i, self.model)
         sys.stdout.write('\x1b[1A')

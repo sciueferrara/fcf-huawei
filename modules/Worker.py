@@ -41,8 +41,10 @@ class Worker(multiprocessing.Process):
             YtY = Yt.dot(self.starting_model.item_vecs)
 
             YTCuY = YtY + Yt.dot(self.clients[next_task].Cu - self.clients[next_task].I).dot(self.starting_model.item_vecs)
-            self.clients[next_task].model.user_vec = sp.sparse.csr_matrix(sp.sparse.linalg.spsolve(YTCuY + reg, Yt.dot(self.clients[next_task].Cu).dot(
+            calcolo = sp.sparse.csr_matrix(sp.sparse.linalg.spsolve(YTCuY + reg, Yt.dot(self.clients[next_task].Cu).dot(
                 self.clients[next_task].train_set.T)))
+            print(calcolo)
+            self.clients[next_task].model.user_vec = calcolo
 
             grad = self.lr * 2 * (sp.sparse.csr_matrix(self.clients[next_task].train_set) -
                                   self.clients[next_task].model.user_vec * self.starting_model.item_vecs.T).T *\
