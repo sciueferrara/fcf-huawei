@@ -1,6 +1,6 @@
 # Federated Collaborative Filtering
 
-Unofficial implementation of the algorithm described in the paper [Federated Collaborative Filtering for Privacy-Preserving Personalized Recommendation System](https://arxiv.org/pdf/1901.09888v1.pdf) by Muhammad Ammad-ud-din et al.
+**Unofficial implementation of the algorithm described in the paper [Federated Collaborative Filtering for Privacy-Preserving Personalized Recommendation System](https://arxiv.org/pdf/1901.09888v1.pdf) by Muhammad Ammad-ud-din et al.**
 
 This Python implementation is mainly based on sparse computations performed with the library [scipy](https://www.scipy.org).
 
